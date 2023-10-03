@@ -1,4 +1,6 @@
-﻿namespace Q102061800_McNeill_Dominic_DAC416_AE1_Project
+﻿
+
+namespace ConsoleApp
 {
     internal class Program
     {

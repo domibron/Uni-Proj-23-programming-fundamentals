@@ -71,6 +71,11 @@ namespace RougeGame
                   
 
                 // this hurts my eyes! AH!
+
+                /* I think maybe redo / make it more readable
+                 * Can any of this go into functions.
+                 * also relook at the flow chart
+                 */
                 if (value == 5 && !returnValue.heal && energyCalc >= 10)
                 {
                     Console.Clear();

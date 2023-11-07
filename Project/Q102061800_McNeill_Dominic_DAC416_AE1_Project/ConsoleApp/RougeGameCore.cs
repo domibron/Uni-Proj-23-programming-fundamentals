@@ -33,9 +33,16 @@ namespace RougeGame
             bool inLoop = true;
             int energyCalc = playerCreature.energy;
 
+            const int minChoice = 1;
+            const int maxChoice = 5;
+
+            const int attackCost = 5;
+            const int specialAttackCost = 20;
+            const int healCost = 10;
+
             while (inLoop)
             {
-                if (energyCalc >= 10)
+                if (energyCalc >= healCost)
                 {
                     RougeGameUtil.DisplayText("[1] Attack");
                 }
@@ -44,7 +51,7 @@ namespace RougeGame
                     RougeGameUtil.DisplayText("[1] Attack", ConsoleColor.DarkRed);
                 }
 
-                if (energyCalc >= 20)
+                if (energyCalc >= specialAttackCost)
                 {
                     RougeGameUtil.DisplayText("[2] Special Attack");
                 }
@@ -56,7 +63,7 @@ namespace RougeGame
                 RougeGameUtil.DisplayText("[3] Recharge");
                 RougeGameUtil.DisplayText("[4] Dodge");
 
-                if (!returnValue.heal && energyCalc >= 10)
+                if (!returnValue.heal && energyCalc >= attackCost)
                 {
                     RougeGameUtil.DisplayText("[5] Heal");
                 }
@@ -66,8 +73,9 @@ namespace RougeGame
                 }
 
 
-                int value = RougeGameCore.HandlePlayerInput("\nAction:", 1, 5);
+                int value = RougeGameCore.HandlePlayerInput("\nAction:", minChoice, maxChoice);
 
+                Moves move = RougeGameUtil.ConvertIntIntoMoves(value);
                   
 
                 // this hurts my eyes! AH!
@@ -76,30 +84,30 @@ namespace RougeGame
                  * Can any of this go into functions.
                  * also relook at the flow chart
                  */
-                if (value == 5 && !returnValue.heal && energyCalc >= 10)
+                if (move == Moves.Heal && !returnValue.heal && energyCalc >= healCost)
                 {
                     Console.Clear();
                     returnValue.heal = true;
                     energyCalc /= 2;
                 }
-                else if (value == 5 && returnValue.heal)
+                else if (move == Moves.Heal && returnValue.heal)
                 {
                     Console.Clear();
                     RougeGameUtil.DisplayText("\nYOU ALREADY CHOSEN HEAL, YOU CAN PICK ANOTHER MOVE\n", ConsoleColor.Red);
                 }
-                else if (value == 1 && energyCalc >= 10)
+                else if (move == Moves.Attack && energyCalc >= attackCost)
                 {
-                    returnValue.intAction = value;
+                    returnValue.action = move;
                     inLoop = false;
                 }
-                else if (value == 2 && energyCalc >= 20)
+                else if (move == Moves.SpecialAttack && energyCalc >= specialAttackCost)
                 {
-                    returnValue.intAction = value;
+                    returnValue.action = move;
                     inLoop = false;
                 }
-                else if (value == 3 || value == 4)
+                else if (move == Moves.Recharge || move == Moves.Dodge)
                 {
-                    returnValue.intAction = value;
+                    returnValue.action = move;
                     inLoop = false;
                 }
                 else
@@ -121,6 +129,13 @@ namespace RougeGame
 
             bool inLoop = true;
 
+            const int minChoice = 1;
+            const int maxChoice = 5;
+
+            const int attackCost = 5;
+            const int specialAttackCost = 20;
+            const int healCost = 10;
+
             while (inLoop)
             {
                 if (errorCont == 5)
@@ -128,29 +143,31 @@ namespace RougeGame
                     throw new Exception($"Computer failed to pick action, Iteration {errorCont}");
                 }
 
-                int computerChoice = RougeGameUtil.RandomInt(1, 5);
+                int computerChoice = RougeGameUtil.RandomInt(minChoice, maxChoice);
 
-                if (computerChoice == 5 && !action.heal && computerCreature.health <= 80 && computerCreature.energy >= 2)
+                Moves move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
+
+                if (move == Moves.Heal && !action.heal && computerCreature.health <= 80 && computerCreature.energy >= healCost)
                 {
                     action.heal = true;
                 }
-                else if (computerChoice == 5 && action.heal)
+                //else if (computerChoice == 5 && action.heal)
+                //{
+                //    // pick again
+                //}
+                else if (move == Moves.Attack && computerCreature.energy >= attackCost)
                 {
-                    // pick again
-                }
-                else if (computerChoice == 1 && computerCreature.energy >= 10)
-                {
-                    action.intAction = computerChoice;
+                    action.action = move;
                     inLoop = false;
                 }
-                else if (computerChoice == 2 && computerCreature.energy >= 20)
+                else if (move == Moves.SpecialAttack && computerCreature.energy >= specialAttackCost)
                 {
-                    action.intAction = computerChoice;
+                    action.action = move;
                     inLoop = false;
                 }
-                else if (computerChoice == 3 || computerChoice == 4)
+                else if (move == Moves.Recharge || move == Moves.Dodge)
                 {
-                    action.intAction = computerChoice;
+                    action.action = move;
                     inLoop = false;
                 }
                 else
@@ -172,11 +189,17 @@ namespace RougeGame
             Creature Computer = new Creature();
 
             const int healCost = 10;
-            const int RechargeAmmount = 4;
+            const int rechargeAmmount = 4;
 
-            const int CostAttack = 5;
-            const int CostSpecialAttack = 20;
-
+            const int attackCost = 5;
+            const int attackChanceToHit = 80;
+            const int attackMinDamage = 1;
+            const int attackMaxDamage = 10;
+            
+            const int specialAttackCost = 20;
+            const int specialAttackChanceToHit = 50;
+            const int specialAttackMinDamage = 5;
+            const int specialAttackMaxDamage = 20;
 
             while (inLoop)
             {
@@ -210,47 +233,47 @@ namespace RougeGame
                 }
 
                 // player 3 and 4.
-                if (PlayerAction.intAction == 3)
+                if (PlayerAction.action == Moves.Recharge)
                 {
                     RougeGameMoves.Recharge(ref Player, ref Computer);
                 }
 
-                if (PlayerAction.intAction == 4)
+                if (PlayerAction.action == Moves.Dodge)
                 {
                     RougeGameMoves.Dodge(ref Player, ref Computer);
                 }
 
                 // computer 3 and 4.
-                if (ComputerAction.intAction == 3)
+                if (ComputerAction.action == Moves.Recharge)
                 {
                     RougeGameMoves.Recharge(ref Computer, ref Player);
                 }
 
-                if (ComputerAction.intAction == 4)
+                if (ComputerAction.action == Moves.Dodge)
                 {
                     RougeGameMoves.Dodge(ref Computer, ref Player);
                 }
 
                 // player 1 and 2
-                if (PlayerAction.intAction == 1)
+                if (PlayerAction.action == Moves.Attack)
                 {
-                    RougeGameMoves.Attack(ref Player, ref Computer);
+                    RougeGameMoves.Attack(ref Player, ref Computer, attackChanceToHit, attackMinDamage, attackMaxDamage, attackCost);
                 }
 
-                if (PlayerAction.intAction == 2)
+                if (PlayerAction.action == Moves.SpecialAttack)
                 {
-                    RougeGameMoves.Attack(ref Player, ref Computer, 50, 5, 20, 20);
+                    RougeGameMoves.Attack(ref Player, ref Computer, specialAttackChanceToHit, specialAttackMinDamage, specialAttackMaxDamage, specialAttackCost);
                 }
 
                 // computer 1 and 2
-                if (ComputerAction.intAction == 1)
+                if (ComputerAction.action == Moves.Attack)
                 {
-                    RougeGameMoves.Attack(ref Computer, ref Player);
+                    RougeGameMoves.Attack(ref Computer, ref Player, attackChanceToHit, attackMinDamage, attackMaxDamage, attackCost);
                 }
 
-                if (ComputerAction.intAction == 2)
+                if (ComputerAction.action == Moves.SpecialAttack)
                 {
-                    RougeGameMoves.Attack(ref Computer, ref Player, 50, 5, 20, 20);
+                    RougeGameMoves.Attack(ref Computer, ref Player, specialAttackChanceToHit, specialAttackMinDamage, specialAttackMaxDamage, specialAttackCost);
                 }
 
                 Console.Clear();
@@ -281,8 +304,8 @@ namespace RougeGame
                 }
                 else
                 {
-                    RougeGameMoves.EnergyRecharge(ref Player, RechargeAmmount);
-                    RougeGameMoves.EnergyRecharge(ref Computer, RechargeAmmount);
+                    RougeGameMoves.EnergyRecharge(ref Player, rechargeAmmount);
+                    RougeGameMoves.EnergyRecharge(ref Computer, rechargeAmmount);
 
                     RougeGameMoves.ResetMults(ref Player);
                     RougeGameMoves.ResetMults(ref Computer);

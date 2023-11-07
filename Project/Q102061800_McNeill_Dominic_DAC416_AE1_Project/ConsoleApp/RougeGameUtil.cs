@@ -8,18 +8,18 @@ namespace RougeGame
 {
     public struct GameAction
     {
-        public int intAction;
+        public Moves action;
         public bool heal;
 
-        public GameAction(int action = 0, bool healed = false)
+        public GameAction(Moves action = Moves.Attack, bool healed = false)
         {
-            this.intAction = action;
+            this.action = action;
             this.heal = healed;
         }
 
         public GameAction()
         {
-            this.intAction = 0;
+            this.action = Moves.Attack;
             this.heal = false;
         }
     }
@@ -32,6 +32,7 @@ namespace RougeGame
         public int maxEnergy;
         public int energy;
 
+        // float to allow percent muliplication 0.5f = 50%
         public float energyRechargeMult;
         public float hitChanceAddition;
 
@@ -102,6 +103,26 @@ namespace RougeGame
         {
             Random rnd = new Random();
             return rnd.Next(min, max);
+        }
+
+        public static Moves ConvertIntIntoMoves(int value)
+        {
+            switch (value)
+            {
+                case 1:
+                    return Moves.Attack;
+                case 2:
+                    return Moves.SpecialAttack;
+                case 3:
+                    return Moves.Recharge;
+                case 4:
+                    return Moves.Dodge;
+                case 5:
+                    return Moves.Heal;
+            }
+
+            RougeGameUtil.DisplayText("ERROR IN CONVERSION", ConsoleColor.DarkRed);
+            return Moves.Attack;
         }
     }
 }

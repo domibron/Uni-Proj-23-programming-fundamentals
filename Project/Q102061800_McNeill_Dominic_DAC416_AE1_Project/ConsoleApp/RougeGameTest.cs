@@ -8,6 +8,11 @@ namespace RougeGame
 {
     public class RougeGameTest
     {
+        public static bool TestAll()
+        {
+            return false;
+        }
+
         public static bool Text_ValidateInput()
         {
             int testsPassed = 0;

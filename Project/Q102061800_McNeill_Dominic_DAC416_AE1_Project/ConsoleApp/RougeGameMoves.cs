@@ -7,6 +7,15 @@ using RougeGame;
 
 namespace RougeGame
 {
+    public enum Moves
+    {
+        Attack,
+        SpecialAttack,
+        Recharge,
+        Dodge,
+        Heal
+    }
+
     public class RougeGameMoves
     {
         public static void EnergyRecharge(ref Creature creature, int energyRechargeAmmount = 4)

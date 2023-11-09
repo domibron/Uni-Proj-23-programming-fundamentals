@@ -9,11 +9,11 @@ namespace RougeGame
 {
     public enum Moves
     {
-        Attack,
-        SpecialAttack,
-        Recharge,
-        Dodge,
-        Heal
+        Attack=1,
+        SpecialAttack=2,
+        Recharge=3,
+        Dodge=4,
+        Heal=5
     }
 
     public class RougeGameMoves

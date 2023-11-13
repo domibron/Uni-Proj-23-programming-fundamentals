@@ -8,9 +8,8 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            //int vvall;
-            //RougeGameUtil.ValidateInput(Console.ReadLine(), out vvall, 1, 5);
-            //RougeGameUtil.ConvertIntIntoMoves(vvall);
+            RougeGameTest.TestAll();
+
             RougeGameCore.GameCore();
         }
     }

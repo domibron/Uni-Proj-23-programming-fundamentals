@@ -60,8 +60,8 @@ namespace RougeGame
                 GameAction PlayerAction = new GameAction();
                 GameAction ComputerAction = new GameAction();
 
-                PlayerAction = InputHandling.PlayerInput(Player, displayInfo);
-                ComputerAction = InputHandling.ComputerInput(Computer);
+                PlayerAction = RougeGameInputHandling.PlayerInput(Player, displayInfo);
+                ComputerAction = RougeGameInputHandling.ComputerInput(Computer);
 
                 // player heal.
                 if (PlayerAction.heal)

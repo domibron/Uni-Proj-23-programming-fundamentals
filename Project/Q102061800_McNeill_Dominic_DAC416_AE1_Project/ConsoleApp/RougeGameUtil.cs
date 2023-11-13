@@ -81,7 +81,7 @@ namespace RougeGame
 
         public static bool ValidateInput(string input, out int value, int minValue, int maxValue)
         {
-            value = -1;
+            value = 0;
             if (string.IsNullOrEmpty(input))
             {
                 return false;

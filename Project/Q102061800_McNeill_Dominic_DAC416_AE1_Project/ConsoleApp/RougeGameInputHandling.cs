@@ -6,17 +6,27 @@ using System.Threading.Tasks;
 
 namespace RougeGame
 {
-    public class InputHandling
+    public class RougeGameInputHandling
     {
-        // could redo to be more flexible.
-        public static int HandlePlayerInput(string msg, int minValue, int maxValue)
+       // doing // could redo to be more flexible.
+        public static int HandlePlayerInput(string msg, int minValue, int maxValue, bool debug = false, string forcedInput = "")
         {
             RougeGameUtil.DisplayText(msg);
 
-            string? input = Console.ReadLine();
+            string? input = "";
+
+            if (!debug)
+            {
+                input = Console.ReadLine();
+            }
+            else
+            {
+                input = forcedInput;
+            }
 
             int value;
 
+            // no, the input should have a value.
             if (RougeGameUtil.ValidateInput(input, out value, minValue, maxValue))
             {
                 return value;
@@ -75,9 +85,10 @@ namespace RougeGame
                 {
                     RougeGameUtil.DisplayText("[5] Heal", ConsoleColor.DarkRed);
                 }
-                
 
-                int value = InputHandling.HandlePlayerInput("\nAction:", minChoice, maxChoice);
+
+                int value = RougeGameInputHandling.HandlePlayerInput("\nAction:", minChoice, maxChoice);
+                
 
                 if (value == 0) // I dont want to automattically pick attack. I want the player to pick.
                 {

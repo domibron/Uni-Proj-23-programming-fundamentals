@@ -34,7 +34,7 @@ namespace RougeGame
 
         // float to allow percent muliplication 0.5f = 50%
         public float energyRechargeMult;
-        //how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
+        // how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
         public float hitChanceAddition;
 
         public Creature(int totalHealth, int totalEnergy)

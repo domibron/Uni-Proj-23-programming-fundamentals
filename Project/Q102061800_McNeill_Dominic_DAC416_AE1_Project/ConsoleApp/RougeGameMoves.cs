@@ -16,9 +16,27 @@ namespace RougeGame
         Heal=5
     }
 
+    public struct GameAction
+    {
+        public Moves action;
+        public bool heal;
+
+        public GameAction(Moves action = Moves.Attack, bool healed = false)
+        {
+            this.action = action;
+            this.heal = healed;
+        }
+
+        public GameAction()
+        {
+            this.action = Moves.Attack;
+            this.heal = false;
+        }
+    }
+
     public class RougeGameMoves
     {
-        public static void EnergyRecharge(ref Creature creature, int energyRechargeAmmount = 4)
+        public static void EnergyRechargeForRound(ref Creature creature, int energyRechargeAmmount = 4)
         {
             creature.energy += (int)(energyRechargeAmmount * creature.energyRechargeMult);
 
@@ -28,7 +46,7 @@ namespace RougeGame
             }
         }
 
-        public static void Heal(ref Creature creature, int costToHeal)
+        public static void Heal(ref Creature creature, int costToHeal = 10)
         {
             creature.energy -= costToHeal;
 

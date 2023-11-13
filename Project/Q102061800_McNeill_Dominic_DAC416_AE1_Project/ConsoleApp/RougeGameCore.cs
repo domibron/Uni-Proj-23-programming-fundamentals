@@ -147,8 +147,8 @@ namespace RougeGame
                 }
                 else
                 {
-                    RougeGameMoves.EnergyRecharge(ref Player, rechargeAmmount);
-                    RougeGameMoves.EnergyRecharge(ref Computer, rechargeAmmount);
+                    RougeGameMoves.EnergyRechargeForRound(ref Player, rechargeAmmount);
+                    RougeGameMoves.EnergyRechargeForRound(ref Computer, rechargeAmmount);
 
                     RougeGameMoves.ResetMults(ref Player);
                     RougeGameMoves.ResetMults(ref Computer);

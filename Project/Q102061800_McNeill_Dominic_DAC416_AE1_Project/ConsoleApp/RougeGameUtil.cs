@@ -6,63 +6,6 @@ using System.Threading.Tasks;
 
 namespace RougeGame
 {
-    public struct GameAction
-    {
-        public Moves action;
-        public bool heal;
-
-        public GameAction(Moves action = Moves.Attack, bool healed = false)
-        {
-            this.action = action;
-            this.heal = healed;
-        }
-
-        public GameAction()
-        {
-            this.action = Moves.Attack;
-            this.heal = false;
-        }
-    }
-
-    public struct Creature
-    {
-        public int maxHealth;
-        public int health;
-
-        public int maxEnergy;
-        public int energy;
-
-        // float to allow percent muliplication 0.5f = 50%
-        public float energyRechargeMult;
-        // how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
-        public float hitChanceAddition;
-
-        public Creature(int totalHealth, int totalEnergy)
-        {
-            this.maxHealth = totalHealth;
-            this.maxEnergy = totalEnergy;
-
-            this.health = this.maxHealth;
-            this.energy = this.maxEnergy;
-
-            // want to add more creatures or have more fights in one game then reset at the start of a new game.
-            this.energyRechargeMult = 1;
-            this.hitChanceAddition = 0;
-        }
-        public Creature()
-        {
-            this.maxHealth = 100;
-            this.maxEnergy = 100;
-
-            this.health = this.maxHealth;
-            this.energy = this.maxEnergy;
-
-            // want to add more creatures or have more fights in one game then reset at the start of a new game.
-            this.energyRechargeMult = 1;
-            this.hitChanceAddition = 0;
-        }
-    }
-
     public class RougeGameUtil
     {
         public static void DisplayText(string str)
@@ -121,7 +64,7 @@ namespace RougeGame
 
             string? nameOfMove = Enum.GetName(typeof(Moves), (int)value);
 
-            if (value != null)
+            if (nameOfMove != null)
                 // returns the enum of the selected value
                 return (Moves)Enum.Parse(typeof(Moves), nameOfMove);
             else 

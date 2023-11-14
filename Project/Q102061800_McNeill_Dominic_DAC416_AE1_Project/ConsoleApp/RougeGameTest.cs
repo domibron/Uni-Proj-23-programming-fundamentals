@@ -67,14 +67,24 @@ namespace RougeGame
                 RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
 
                 bool intResult = int.TryParse(input, out intParseValue);
-                
+
+                Moves conformationValue = new();
+
                 Moves result = RougeGameUtil.ConvertIntIntoMoves(intParseValue);
 
-                int intConvert = Enum.GetNames(typeof(Moves)).;
+                foreach (int moveInt in Enum.GetValues(typeof(Moves)))
+                {
+                    if (moveInt == intParseValue)
+                    {
+                        conformationValue = (Moves)Enum.Parse(typeof(Moves), (string)Enum.GetName(typeof(Moves), (int)moveInt));
+                    }
+                }
+
+                
 
                 // Yes, it could be null.
-                //
-                if (result == (Moves)Enum.GetValues(typeof(Moves)).GetValue(intParseValue) && intParseValue <= maxValue && intParseValue >= minValue)
+                // Sure SIre
+                if (result == (Moves)Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1) && intParseValue <= maxValue && intParseValue >= minValue)
                 {
                     RougeGameUtil.DisplayText($"Test passed: !{result}, !{input}", ConsoleColor.Green);
 

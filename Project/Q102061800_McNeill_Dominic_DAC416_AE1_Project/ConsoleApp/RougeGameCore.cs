@@ -15,8 +15,11 @@ namespace RougeGame
         {
             bool inLoop = true;
 
-            Creature Player = new Creature();
-            Creature Computer = new Creature();
+            //Creature Player = new Creature();
+            //Creature Computer = new Creature();
+
+            CreatureBase Player = new CreatureBase();
+            CreatureBase Computer = new CreatureBase();
 
             const int healCost = 10;
             const int rechargeAmmount = 4;

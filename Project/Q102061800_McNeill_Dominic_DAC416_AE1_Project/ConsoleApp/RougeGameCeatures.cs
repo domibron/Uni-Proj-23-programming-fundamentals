@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace RougeGame
         public Creature()
         {
             this.maxHealth = 100;
-            this.maxEnergy = 100;
+            this.maxEnergy = 50;
 
             this.health = this.maxHealth;
             this.energy = this.maxEnergy;
@@ -55,6 +56,22 @@ namespace RougeGame
 
     public class CreatureBase
     {
+        ////base stuff
+        //public const int maxHealth = 100;
+        //public const int maxEnergy = 100;
+
+        public const int maxHealth = 100;
+        public int health = maxHealth;
+
+        public const int maxEnergy = 50;
+        public int energy = maxEnergy;
+
+        // float to allow percent muliplication 0.5f = 50%
+        public float energyRechargeMult = 1;
+        // how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
+        public float hitChanceAddition = 0;
+
+
         // Attack
         public const int attackDmgMin = 1;
         public const int attackDmgMax = 10;
@@ -79,15 +96,55 @@ namespace RougeGame
         public const int healCost = 10;
         // \/ Not used yet.
         public const float energyConvertion = 0.5f;
-    }
-
-    public class Player : CreatureBase
-    {
-        public Creature playerCreature;
 
         public void NewCreature()
         {
-            playerCreature = new();
+            health = maxHealth;
+            energy = maxEnergy;
+
+            energyRechargeMult = 1;
+            hitChanceAddition = 0;
+        }
+
+        public void ResetMultipliers()
+        {
+            energyRechargeMult = 1;
+            hitChanceAddition = 0;
+        }
+
+        public void ResetStats()
+        {
+            health = maxHealth;
+            energy = maxEnergy;
+        }
+
+        public void Damage(int damage)
+        {
+            health -= damage;
+        }
+
+        public void Heal()
+        {
+            energy -= healCost;
+
+            health += energy / 2;
+
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
+
+            energy /= 2;
+        }
+
+        public void RechargeEnergy()
+        {
+            energy += (int)(reChargeRate * energyRechargeMult);
+
+            if (energy > maxEnergy)
+            {
+                energy = maxEnergy;
+            }
         }
     }
 }

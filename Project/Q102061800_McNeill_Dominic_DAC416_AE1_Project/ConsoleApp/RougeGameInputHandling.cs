@@ -36,12 +36,11 @@ namespace RougeGame
             return 0;
         }
 
-        public static GameAction PlayerInput(Creature playerCreature, string displayInfo = "")
+        public static GameAction PlayerInput(int playerCreatureEnergy, string displayInfo = "")
         {
             GameAction returnValue = new GameAction();
 
             bool waitingForValidInput = true;
-            int energyCalc = playerCreature.energy;
 
             const int minChoice = 1;
             const int maxChoice = 5;
@@ -53,7 +52,7 @@ namespace RougeGame
             while (waitingForValidInput)
             {
 
-                if (energyCalc >= attackCost)
+                if (playerCreatureEnergy >= attackCost)
                 {
                     RougeGameUtil.DisplayText("[1] Attack");
                 }
@@ -62,7 +61,7 @@ namespace RougeGame
                     RougeGameUtil.DisplayText("[1] Attack", ConsoleColor.DarkRed);
                 }
 
-                if (energyCalc >= specialAttackCost)
+                if (playerCreatureEnergy >= specialAttackCost)
                 {
                     RougeGameUtil.DisplayText("[2] Special Attack");
                 }
@@ -74,7 +73,7 @@ namespace RougeGame
                 RougeGameUtil.DisplayText("[3] Recharge");
                 RougeGameUtil.DisplayText("[4] Dodge");
 
-                if (!returnValue.heal && energyCalc >= healCost)
+                if (!returnValue.heal && playerCreatureEnergy >= healCost)
                 {
                     RougeGameUtil.DisplayText("[5] Heal");
                 }
@@ -109,12 +108,13 @@ namespace RougeGame
                  * also relook at the flow chart
                  */
                 
-                if (move == Moves.Heal && !returnValue.heal && energyCalc >= healCost)
+                if (move == Moves.Heal && !returnValue.heal && playerCreatureEnergy >= healCost)
                 {
                     Console.Clear();
                     RougeGameUtil.DisplayText(displayInfo);
                     returnValue.heal = true;
-                    energyCalc /= 2;
+                    playerCreatureEnergy -= healCost;
+                    playerCreatureEnergy /= 2;
                 }
                 else if (move == Moves.Heal && returnValue.heal)
                 {
@@ -122,12 +122,12 @@ namespace RougeGame
                     RougeGameUtil.DisplayText(displayInfo);
                     RougeGameUtil.DisplayText("\nYOU ALREADY CHOSEN HEAL, BUT YOU CAN SELECT ANOTHER MOVE\n", ConsoleColor.Red);
                 }
-                else if (move == Moves.Attack && energyCalc >= attackCost)
+                else if (move == Moves.Attack && playerCreatureEnergy >= attackCost)
                 {
                     returnValue.action = move;
                     waitingForValidInput = false;
                 }
-                else if (move == Moves.SpecialAttack && energyCalc >= specialAttackCost)
+                else if (move == Moves.SpecialAttack && playerCreatureEnergy >= specialAttackCost)
                 {
                     returnValue.action = move;
                     waitingForValidInput = false;

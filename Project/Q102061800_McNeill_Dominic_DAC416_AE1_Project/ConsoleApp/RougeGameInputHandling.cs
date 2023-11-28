@@ -149,7 +149,7 @@ namespace RougeGame
             return returnValue;
         }
 
-        public static GameAction ComputerInput(Creature computerCreature)
+        public static GameAction ComputerInput(CreatureBase computerCreature)
         {
             GameAction action = new GameAction();
 
@@ -157,12 +157,12 @@ namespace RougeGame
 
             bool inLoop = true;
 
-            const int minChoice = 1;
-            const int maxChoice = 5;
+            //const int minChoice = 1;
+            //const int maxChoice = 5;
 
-            const int attackCost = 5;
-            const int specialAttackCost = 20;
-            const int healCost = 10;
+            //const int attackCost = 5;
+            //const int specialAttackCost = 20;
+            //const int healCost = 10;
 
             while (inLoop)
             {
@@ -171,11 +171,11 @@ namespace RougeGame
                     throw new Exception($"Computer failed to pick action, Iteration {errorCont}");
                 }
 
-                int computerChoice = RougeGameUtil.RandomInt(minChoice, maxChoice);
+                int computerChoice = RougeGameUtil.RandomInt((int)Enum.GetValues(typeof(Moves)).GetValue(0), Enum.GetValues(typeof(Moves)).Length);
 
                 Moves move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
-                if (move == Moves.Heal && !action.heal && computerCreature.health <= 80 && computerCreature.energy >= healCost)
+                if (move == Moves.Heal && !action.heal && computerCreature.health <= 80 && computerCreature.energy >= CreatureBase.healCost)
                 {
                     action.heal = true;
                 }
@@ -183,12 +183,12 @@ namespace RougeGame
                 //{
                 //    // pick again
                 //}
-                else if (move == Moves.Attack && computerCreature.energy >= attackCost)
+                else if (move == Moves.Attack && computerCreature.energy >= CreatureBase.attackCost)
                 {
                     action.action = move;
                     inLoop = false;
                 }
-                else if (move == Moves.SpecialAttack && computerCreature.energy >= specialAttackCost)
+                else if (move == Moves.SpecialAttack && computerCreature.energy >= CreatureBase.specialAttackCost)
                 {
                     action.action = move;
                     inLoop = false;

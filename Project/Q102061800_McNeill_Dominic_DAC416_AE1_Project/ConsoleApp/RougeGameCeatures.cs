@@ -66,27 +66,31 @@ namespace RougeGame
         public const int maxEnergy = 50;
         public int energy = maxEnergy;
 
+
+        public const float normalRechargeRate = 1f;
         // float to allow percent muliplication 0.5f = 50%
         public float energyRechargeMult = 1;
+
+        public const float normalHitChance = 1f; // might not need these
         // how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
         public float hitChanceAddition = 0;
 
 
         // Attack
-        public const int attackDmgMin = 1;
-        public const int attackDmgMax = 10;
+        public const int attackDamageMin = 1;
+        public const int attackDamageMax = 10;
         public const int attackHitChance = 80;
         public const int attackCost = 5;
 
         // Special Attack
-        public const int specialAttackDmgMin = 5;
-        public const int specialAttackDmgMax = 20;
+        public const int specialAttackDamageMin = 5;
+        public const int specialAttackDamageMax = 20;
         public const int specialAttackHitChance = 50;
         public const int specialAttackCost = 20;
 
         // Re-Charge
-        public const int reChargeHitChance = 10;
-        public const float reChargeRate = 4f;
+        public const int rechargeHitChance = 10;
+        public const float rechargeRate = 4f;
 
         // Dodge
         public const int dodgeHitChance = -30;
@@ -99,11 +103,13 @@ namespace RougeGame
 
         public void NewCreature()
         {
-            health = maxHealth;
-            energy = maxEnergy;
+            ResetStats();
+            //health = maxHealth;
+            //energy = maxEnergy;
 
-            energyRechargeMult = 1;
-            hitChanceAddition = 0;
+            ResetMultipliers();
+            //energyRechargeMult = 1;
+            //hitChanceAddition = 0;
         }
 
         public void ResetMultipliers()
@@ -118,7 +124,7 @@ namespace RougeGame
             energy = maxEnergy;
         }
 
-        public void Damage(int damage)
+        public void TakeDamage(int damage)
         {
             health -= damage;
         }
@@ -139,7 +145,7 @@ namespace RougeGame
 
         public void RechargeEnergy()
         {
-            energy += (int)(reChargeRate * energyRechargeMult);
+            energy += (int)(rechargeRate * energyRechargeMult);
 
             if (energy > maxEnergy)
             {

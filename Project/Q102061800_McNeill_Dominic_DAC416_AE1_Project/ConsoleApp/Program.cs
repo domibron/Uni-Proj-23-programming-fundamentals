@@ -9,8 +9,6 @@ namespace ConsoleApp
         {
             //RougeGameTest.TestAll();
 
-            
-
             RougeGameCore.GameCore();
         }
     }

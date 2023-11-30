@@ -16,15 +16,13 @@ namespace RougeGame
         public int Width;
 
         
-        public static void DrawUIBars(float barOneValue, float barOneTotal, ConsoleColor barOneColour, float barTwoValue, float barTwoTotal, ConsoleColor barTwoColour, ConsoleColor emptyColour = ConsoleColor.Black, ConsoleColor spacerColour = ConsoleColor.DarkGray)
+        public static void DrawUIBars(float barOneValue, float barOneTotal, ConsoleColor barOneColour, float barTwoValue, float barTwoTotal, ConsoleColor barTwoColour, float spacerSize = 1, ConsoleColor emptyColour = ConsoleColor.Black, ConsoleColor spacerColour = ConsoleColor.DarkGray)
         {
             /* I have no clue on how this works, there is so much math,
              * my brain hurts.
              */
 
-            //string SinglePixel = "█";
-
-            float spacerSize = 1f;
+            // keep it hard coded for now.
             float barSegments = 2f;
 
             float barWidth = MathF.Floor((Console.BufferWidth - spacerSize) / barSegments);
@@ -33,23 +31,17 @@ namespace RougeGame
 
             float barSpacer = Console.BufferWidth - totalBarWidth;
 
-            //Console.WriteLine(Console.BufferWidth + " " + barWidth + " " + (barWidth*2));
-
-            // player health
+            // can make console.buffer - spacersize into another variable.
 
             float pixelLength = (float)Console.BufferWidth / (Console.BufferWidth - spacerSize);
 
             float barOnePixelValue = (barOneValue / barOneTotal) * barWidth * pixelLength;
             float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength) + (Console.BufferWidth - barWidth);
 
-            //Console.WriteLine(barWidth + " " + totalBarWidth + " " + pixelLength + " " + (barWidth + barSpacer) + " " + Console.BufferWidth);
-
-            //Console.WriteLine(barOnePixelValue);
-            //Console.WriteLine(barTwoPixelValue);
-
             for (int i = 0; i < Console.BufferWidth; i++)
             {
-                // for more flexi, need to redo for bar segments.
+                // for more flexi, need to redo for bar segments. not needed for now. mainly due to limitations
+                // in the input feilds.
                 if (barOnePixelValue >= i * pixelLength && i <= barWidth)
                 {
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, barOneColour);
@@ -70,12 +62,7 @@ namespace RougeGame
                 {
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
-                //Console.Write(i * pixelLength + "/" + enemyHealthValue);
             }
-
-            //for (int i = 0;)
-
-            // enemy health
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("");

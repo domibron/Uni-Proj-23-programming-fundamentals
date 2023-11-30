@@ -39,7 +39,8 @@ namespace RougeGame
 
                 RougeGameUtil.DisplayText(displayInfo);
 
-                RougeGameUI.DrawUIBars(Player, Computer);
+                RougeGameUI.DrawUIBars(Player.health, CreatureBase.maxHealth, ConsoleColor.Red, Computer.health, CreatureBase.maxHealth, ConsoleColor.DarkRed);
+                RougeGameUI.DrawUIBars(Player.energy, CreatureBase.maxEnergy, ConsoleColor.Green, Computer.energy, CreatureBase.maxEnergy, ConsoleColor.DarkGreen);
 
 
                 GameAction PlayerAction = new GameAction();

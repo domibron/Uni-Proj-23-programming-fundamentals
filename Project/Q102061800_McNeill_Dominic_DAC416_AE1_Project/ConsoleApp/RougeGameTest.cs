@@ -49,7 +49,7 @@ namespace RougeGame
             // variables for test cases.
             // Yes, it could be null, but it should not.
             int minValue = (int)Enum.GetValues(typeof(Moves)).GetValue(0);
-            int maxValue = Enum.GetValues(typeof(Moves)).Length;
+            int maxValue = (int)Enum.GetValues(typeof(Moves)).GetValue(Enum.GetValues(typeof(Moves)).Length-1);
 
             if (minValue == null || maxValue == null)
             {
@@ -80,11 +80,18 @@ namespace RougeGame
                     }
                 }
 
-                
+
 
                 // Yes, it could be null.
-                // Sure SIre
-                if (result == (Moves)Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1) && intParseValue <= maxValue && intParseValue >= minValue)
+                // Sure, Sure.
+
+                Console.WriteLine(result);
+
+                if (intParseValue <= minValue || intParseValue >= maxValue)
+                {
+                    RougeGameUtil.DisplayText($"{minValue} {maxValue}");
+                }
+                else if (result != (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1))) && (intParseValue < maxValue || intParseValue > minValue))
                 {
                     RougeGameUtil.DisplayText($"Test passed: !{result}, !{input}", ConsoleColor.Green);
 
@@ -94,7 +101,7 @@ namespace RougeGame
                     intParseValue = -999;
                 }
                 // checks if the result is the same as the int parse and the result is within the min and max values.
-                else if (result == (Moves)Enum.GetValues(typeof(Moves)).GetValue(intParseValue) && (intParseValue > maxValue || intParseValue < minValue))
+                else if (result == (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1))) && (intParseValue < maxValue || intParseValue > minValue))
                 {
                     RougeGameUtil.DisplayText($"Test passed: {result} = {input}", ConsoleColor.Green);
 

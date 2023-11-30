@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,53 +15,62 @@ namespace RougeGame
         public int Height;
         public int Width;
 
-
-        public static void DrawUIBars(CreatureBase player, CreatureBase enemy)
+        
+        public static void DrawUIBars(float barOneValue, float barOneTotal, ConsoleColor barOneColour, float barTwoValue, float barTwoTotal, ConsoleColor barTwoColour, ConsoleColor emptyColour = ConsoleColor.Black, ConsoleColor spacerColour = ConsoleColor.DarkGray)
         {
-            string SinglePixel = "█";
+            /* I have no clue on how this works, there is so much math,
+             * my brain hurts.
+             */
 
-            float barWidth = MathF.Floor((Console.BufferWidth - 1f) / 2f);
+            //string SinglePixel = "█";
 
-            float totalBarWidth = barWidth * 2f;
+            float spacerSize = 1f;
+            float barSegments = 2f;
+
+            float barWidth = MathF.Floor((Console.BufferWidth - spacerSize) / barSegments);
+
+            float totalBarWidth = barWidth * barSegments;
+
+            float barSpacer = Console.BufferWidth - totalBarWidth;
 
             //Console.WriteLine(Console.BufferWidth + " " + barWidth + " " + (barWidth*2));
 
             // player health
 
-            float pixelLength = barWidth / CreatureBase.maxHealth;
+            float pixelLength = (float)Console.BufferWidth / (Console.BufferWidth - spacerSize);
 
-            float playerHealthValue = (50 / CreatureBase.maxHealth) * barWidth * pixelLength;
-            float enemyHealthValue = (100 / CreatureBase.maxHealth) * barWidth * pixelLength + Console.BufferWidth - barWidth;
+            float barOnePixelValue = (barOneValue / barOneTotal) * barWidth * pixelLength;
+            float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength) + (Console.BufferWidth - barWidth);
+
+            //Console.WriteLine(barWidth + " " + totalBarWidth + " " + pixelLength + " " + (barWidth + barSpacer) + " " + Console.BufferWidth);
+
+            //Console.WriteLine(barOnePixelValue);
+            //Console.WriteLine(barTwoPixelValue);
 
             for (int i = 0; i < Console.BufferWidth; i++)
             {
-                //Console.WriteLine(i + " " + barWidth + " " + (Console.BufferWidth - barWidth) + " " + (Console.BufferWidth - totalBarWidth) + " " + (Console.BufferWidth - totalBarWidth + barWidth));
-
-                if (playerHealthValue >= i * pixelLength && i <= barWidth)
+                // for more flexi, need to redo for bar segments.
+                if (barOnePixelValue >= i * pixelLength && i <= barWidth)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(SinglePixel);
+                    RougeGameUtil.DisplayTextSameLine(SinglePixel, barOneColour);
                 }
-                else if (i <= barWidth)
+                else if (barOnePixelValue < i * pixelLength && i <= barWidth)
                 {
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(SinglePixel);
+                    RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
-                else if (i >= barWidth && i <= Console.BufferWidth - barWidth)
+                else if (i >= barWidth && i <= barWidth + barSpacer)
                 {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.Write(SinglePixel);
+                    RougeGameUtil.DisplayTextSameLine(SinglePixel, spacerColour);
                 }
-                else if (enemyHealthValue >= i * pixelLength && i >= Console.BufferWidth - barWidth)
+                else if (barTwoPixelValue >= i * pixelLength && i >= barWidth + barSpacer)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(SinglePixel);
+                    RougeGameUtil.DisplayTextSameLine(SinglePixel, barTwoColour);
                 }
-                else if (i >= Console.BufferWidth - barWidth)
+                else if (barTwoPixelValue < i * pixelLength && i >= barWidth + barSpacer)
                 {
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(SinglePixel);
+                    RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
+                //Console.Write(i * pixelLength + "/" + enemyHealthValue);
             }
 
             //for (int i = 0;)
@@ -79,12 +89,12 @@ namespace RougeGame
 
             float pixelLength = length / total;
             
-            float healthValue = (value / total) * length * pixelLength;
+            float barValue = (value / total) * length * pixelLength;
 
             for (int i = 0; i < length; i++)
             {
                 
-                if (healthValue >= i * pixelLength)
+                if (barValue >= i * pixelLength)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(SinglePixel);
@@ -110,13 +120,13 @@ namespace RougeGame
             Console.WriteLine(pixelLength);
 
 
-            float healthValue = (value / total) * consoleWidth * pixelLength;
-            Console.WriteLine(healthValue);
+            float barValue = (value / total) * consoleWidth * pixelLength;
+            Console.WriteLine(barValue);
 
             for (int i = 0; i < consoleWidth; i++)
             {
 
-                if (healthValue >= i * pixelLength)
+                if (barValue >= i * pixelLength)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(SinglePixel);
@@ -151,11 +161,11 @@ namespace RougeGame
 
         public static void DrawImageTest(int[,] imageMatrix)
         {
-            
-            
+
+
             //int[,] image =
             //    {
-            //    {0,4,4,4,0,0},
+            //    {-1,4,4,4,-1,0},
             //    {4,4,11,11,0,0},
             //    {4,4,4,4,0,0},
             //    {0,4,0,4,0,0},
@@ -166,15 +176,37 @@ namespace RougeGame
             //};
 
             // gets the length of the x axis and loops through it.
-            for (int x = 0; x < imageMatrix.GetLength(0); x++)
+            for (int y = 0; y < imageMatrix.GetLength(0); y++)
             {
                 // gets the length of the y axis and loops through it.
-                for (int y = 0; y < imageMatrix.GetLength(1); y++)
+                for (int x = 0; x < imageMatrix.GetLength(1); x++)
                 {
-                    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), Enum.GetName(typeof(ConsoleColor), imageMatrix[x, y]));
+                    if (imageMatrix[y, x] >= 0)
+                    {
+                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), Enum.GetName(typeof(ConsoleColor), imageMatrix[y, x]));
+                    }
+                    else if (imageMatrix[y, x] == -1)
+                    {
+                        (int cursorX, int cursorY) = Console.GetCursorPosition();
+
+                        Console.SetCursorPosition(cursorX + 1, cursorY);
+                        Console.ForegroundColor = Console.BackgroundColor;
+                        Console.SetCursorPosition(cursorX, cursorY);
+                    }
+                    else if (imageMatrix[y, x] == -2)
+                    {
+                        (int cursorX, int cursorY) = Console.GetCursorPosition();
+
+                        Console.SetCursorPosition(cursorX + 1, cursorY);
+                        Console.ForegroundColor = Console.ForegroundColor;
+                        Console.SetCursorPosition(cursorX, cursorY);
+                    }
+
+
                     Console.Write(Pixel);
 
                 }
+
                 Console.Write("\n");
             }
         }

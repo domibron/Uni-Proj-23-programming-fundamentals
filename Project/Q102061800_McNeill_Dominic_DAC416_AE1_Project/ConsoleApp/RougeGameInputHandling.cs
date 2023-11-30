@@ -166,16 +166,52 @@ namespace RougeGame
 
             while (inLoop)
             {
-                if (errorCont == 5)
+                //if (errorCont == 5)
+                //{
+                //    throw new Exception($"Computer failed to pick action, Iteration {errorCont}");
+                //}
+
+                Moves move = new Moves();
+
+
+                // start of better logic
+
+                // for now, stops the player of spamming attack.
+
+                if (computerCreature.health <= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.2f)
                 {
-                    throw new Exception($"Computer failed to pick action, Iteration {errorCont}");
+                    action.heal = true;
+                    move = Moves.Dodge;
+                    inLoop = false;
                 }
+                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy <= CreatureBase.maxEnergy * 0.2f)
+                {
+                    action.heal = false;
+                    move = Moves.Recharge;
+                    inLoop = false;
+                }
+                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.5f)
+                {
+                    action.heal = false;
+                    move = Moves.SpecialAttack;
+                    inLoop = false;
+                }
+                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.2f)
+                {
+                    action.heal = false;
+                    move = Moves.Attack;
+                    inLoop = false;
+                }
+
+
+                // end of better logic
+
 
                 int computerChoice = RougeGameUtil.RandomInt((int)Enum.GetValues(typeof(Moves)).GetValue(0), Enum.GetValues(typeof(Moves)).Length);
 
-                Moves move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
+                move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
-                if (move == Moves.Heal && !action.heal && computerCreature.health <= 80 && computerCreature.energy >= CreatureBase.healCost)
+                if (move == Moves.Heal && !action.heal && computerCreature.health <= (CreatureBase.maxHealth * 0.8f) && computerCreature.energy >= CreatureBase.healCost)
                 {
                     action.heal = true;
                 }
@@ -193,7 +229,12 @@ namespace RougeGame
                     action.action = move;
                     inLoop = false;
                 }
-                else if (move == Moves.Recharge || move == Moves.Dodge)
+                else if (move == Moves.Recharge && computerCreature.energy <= (CreatureBase.maxEnergy * 0.8f))
+                {
+                    action.action = move;
+                    inLoop = false;
+                }
+                else if (move == Moves.Dodge)
                 {
                     action.action = move;
                     inLoop = false;

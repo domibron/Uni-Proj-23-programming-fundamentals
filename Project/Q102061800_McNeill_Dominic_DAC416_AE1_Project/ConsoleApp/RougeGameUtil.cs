@@ -22,6 +22,20 @@ namespace RougeGame
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public static void DisplayTextSameLine(string str)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(str);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void DisplayTextSameLine(string str, ConsoleColor c = ConsoleColor.White)
+        {
+            Console.ForegroundColor = c;
+            Console.Write(str);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
         public static bool ValidateInput(string input, out int value, int minValue, int maxValue)
         {
             value = 0;

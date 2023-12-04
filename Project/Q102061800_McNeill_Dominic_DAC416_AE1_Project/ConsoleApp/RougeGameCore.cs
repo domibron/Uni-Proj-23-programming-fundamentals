@@ -9,25 +9,56 @@ namespace RougeGame
 {
     public class RougeGameCore
     {
-        
+
+        public static void RunGame()
+        {
+            RougeGameFileSystem.LoadAllImages();
+
+            bool PlayerEnteredOption = false;
+
+            while (!PlayerEnteredOption) { 
+
+                Console.Clear();
+
+                RougeGameUtil.DisplayText("   WELCOME TO\n   ROUGE GAME!");
+
+                List<List<int>> logo = new List<List<int>>();
+
+                if (RougeGameFileSystem.Images.TryGetValue("logo", out logo))
+                    RougeGameUI.DrawImage(RougeGameFileSystem.Images["logo"]);
+
+                RougeGameUtil.DisplayText("");
+                RougeGameUtil.DisplayText("      MENU");
+                RougeGameUtil.DisplayText("");
+                RougeGameUtil.DisplayText("[1] - Play Game\n[2] - Quit\n");
+
+                string input = Console.ReadLine();
+
+                if (input == "1")
+                {
+                    GameCore();
+                }
+                else if (input == "2")
+                {
+                    Environment.Exit(0);
+                }
+
+            }
+        }
+
 
         public static int GameCore()
         {
-            bool inLoop = true;
+            Console.Clear();
+            bool WhilePlayerIsInGame = true;
 
-            CreatureBase Player = new CreatureBase();
-            CreatureBase Computer = new CreatureBase();
+            CreatureBase Player = new StandardCreature();
+            CreatureBase Computer = new StandardCreature();
 
-            while (inLoop)
+            while (WhilePlayerIsInGame)
             {
-                // == move elsewhere ==
-                //// a way to leave the game / quit.
-                //if (RougeGameCore.HandlePlayerInput("Quit Game\n1 - yes  |  2 - no", 1, 2) == 1)
-                //{
-                //    inLoop = false;
-                //}
 
-                // display info
+                // display info (TEXT)
                 string displayInfo = "";
 
                 displayInfo += RougeGameUtil.PutSpacingInString($"Player", 25);
@@ -39,8 +70,9 @@ namespace RougeGame
 
                 RougeGameUtil.DisplayText(displayInfo);
 
-                RougeGameUI.DrawUIBars(Player.health, CreatureBase.maxHealth, ConsoleColor.Red, Computer.health, CreatureBase.maxHealth, ConsoleColor.DarkRed);
-                RougeGameUI.DrawUIBars(Player.energy, CreatureBase.maxEnergy, ConsoleColor.Green, Computer.energy, CreatureBase.maxEnergy, ConsoleColor.DarkGreen);
+                // GUI UI
+                RougeGameUI.DrawUIBars(Player.health, Player.maxHealth, ConsoleColor.Red, Computer.health, Computer.maxHealth, ConsoleColor.DarkRed);
+                RougeGameUI.DrawUIBars(Player.energy, Player.maxEnergy, ConsoleColor.Green, Computer.energy, Computer.maxEnergy, ConsoleColor.DarkGreen);
 
 
                 GameAction PlayerAction = new GameAction();
@@ -60,7 +92,7 @@ namespace RougeGame
                 {
                     RougeGameMoves.Heal(ref Computer);
                 }
-            
+
                 // player 3 and 4.
                 if (PlayerAction.action == Moves.Recharge)
                 {
@@ -91,7 +123,7 @@ namespace RougeGame
 
                 if (PlayerAction.action == Moves.SpecialAttack)
                 {
-                    RougeGameMoves.SpecialAttack(ref Player, ref Computer);
+                    RougeGameMoves.SpecialAttack(Player, Computer);
                 }
 
                 // computer 1 and 2
@@ -102,7 +134,7 @@ namespace RougeGame
 
                 if (ComputerAction.action == Moves.SpecialAttack)
                 {
-                    RougeGameMoves.SpecialAttack(ref Computer, ref Player);
+                    RougeGameMoves.SpecialAttack(Computer, Player);
                 }
 
                 Console.Clear();
@@ -116,8 +148,10 @@ namespace RougeGame
                     RougeGameUtil.DisplayText("\nAny key to continue");
                     Console.ReadLine();
 
-                    Player.NewCreature();
-                    Computer.NewCreature();
+                    WhilePlayerIsInGame = false;
+
+                    //Player.NewCreature();
+                    //Computer.NewCreature();
                 }
                 else if (Computer.health <= 0)
                 {
@@ -128,14 +162,15 @@ namespace RougeGame
                     RougeGameUtil.DisplayText("\nAny key to continue");
                     Console.ReadLine();
 
-                    Player.NewCreature();
-                    Computer.NewCreature();
+                    WhilePlayerIsInGame = false;
+
+                    //Player.NewCreature();
+                    //Computer.NewCreature();
                 }
                 else
                 {
                     // could put these into a round reset func.
                     RougeGameMoves.EnergyRechargeForRound(ref Player, ref Computer);
-
                     RougeGameMoves.ResetMults(ref Player, ref Computer);
                 }
 
@@ -143,6 +178,8 @@ namespace RougeGame
             }
 
             return 0;
+
+            
         }
     }
 

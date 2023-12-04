@@ -178,25 +178,25 @@ namespace RougeGame
 
                 // for now, stops the player of spamming attack.
 
-                if (computerCreature.health <= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.2f)
+                if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 0)
                 {
                     action.heal = true;
                     move = Moves.Dodge;
                     inLoop = false;
                 }
-                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy <= CreatureBase.maxEnergy * 0.2f)
+                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy <= computerCreature.maxEnergy * 0.2f)
                 {
                     action.heal = false;
                     move = Moves.Recharge;
                     inLoop = false;
                 }
-                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.5f)
+                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.5f && computerCreature.energy > 20)
                 {
                     action.heal = false;
                     move = Moves.SpecialAttack;
                     inLoop = false;
                 }
-                else if (computerCreature.health >= (CreatureBase.maxHealth * 0.5f) && computerCreature.energy >= CreatureBase.maxEnergy * 0.2f)
+                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 5)
                 {
                     action.heal = false;
                     move = Moves.Attack;
@@ -211,7 +211,7 @@ namespace RougeGame
 
                 move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
-                if (move == Moves.Heal && !action.heal && computerCreature.health <= (CreatureBase.maxHealth * 0.8f) && computerCreature.energy >= CreatureBase.healCost)
+                if (move == Moves.Heal && !action.heal && computerCreature.health <= (computerCreature.maxHealth * 0.8f) && computerCreature.energy >= computerCreature.healCost)
                 {
                     action.heal = true;
                 }
@@ -219,17 +219,17 @@ namespace RougeGame
                 //{
                 //    // pick again
                 //}
-                else if (move == Moves.Attack && computerCreature.energy >= CreatureBase.attackCost)
+                else if (move == Moves.Attack && computerCreature.energy >= computerCreature.attackCost)
                 {
                     action.action = move;
                     inLoop = false;
                 }
-                else if (move == Moves.SpecialAttack && computerCreature.energy >= CreatureBase.specialAttackCost)
+                else if (move == Moves.SpecialAttack && computerCreature.energy >= computerCreature.specialAttackCost)
                 {
                     action.action = move;
                     inLoop = false;
                 }
-                else if (move == Moves.Recharge && computerCreature.energy <= (CreatureBase.maxEnergy * 0.8f))
+                else if (move == Moves.Recharge && computerCreature.energy <= (computerCreature.maxEnergy * 0.8f))
                 {
                     action.action = move;
                     inLoop = false;

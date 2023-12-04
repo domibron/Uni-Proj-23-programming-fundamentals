@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -54,54 +55,62 @@ namespace RougeGame
 
     // planning features.
 
-    public class CreatureBase
+    public abstract class CreatureBase
     {
         ////base stuff
         //public const int maxHealth = 100;
         //public const int maxEnergy = 100;
 
-        public const int maxHealth = 100;
-        public int health = maxHealth;
+        public CreatureBase()
+        {
+            health = maxHealth;
+            energy = maxEnergy;
+        }
 
-        public const int maxEnergy = 50;
-        public int energy = maxEnergy;
+
+        public virtual int maxHealth { get; set; } = 100;
+        public int health;
 
 
-        public const float normalRechargeRate = 1f;
+        public virtual int maxEnergy { get; private set; } = 50;
+        public int energy;
+
+
+        public virtual float normalRechargeRate { get; private set; } = 1f;
         // float to allow percent muliplication 0.5f = 50%
         public float energyRechargeMult = 1;
 
-        public const float normalHitChance = 1f; // might not need these
+        public virtual float normalHitChance { get; private set; } = 1f; // might not need these
         // how much to reduce the percent chance to hit. rnd <= 80 + hitChanceAddition.
         public float hitChanceAddition = 0;
 
 
         // Attack
-        public const int attackDamageMin = 1;
-        public const int attackDamageMax = 10;
-        public const int attackHitChance = 80;
-        public const int attackCost = 5;
+        public virtual int attackDamageMin { get; private set; } = 1;
+        public virtual int attackDamageMax { get; private set; } = 10;
+        public virtual int attackHitChance { get; private set; } = 80;
+        public virtual int attackCost { get; private set; } = 5;
 
         // Special Attack
-        public const int specialAttackDamageMin = 5;
-        public const int specialAttackDamageMax = 20;
-        public const int specialAttackHitChance = 50;
-        public const int specialAttackCost = 20;
+        public virtual int specialAttackDamageMin { get; private set; } = 5;
+        public virtual int specialAttackDamageMax { get; private set; } = 20;
+        public virtual int specialAttackHitChance { get; private set; } = 50;
+        public virtual int specialAttackCost { get; private set; } = 20;
 
         // Re-Charge
-        public const int rechargeHitChance = 10;
-        public const float rechargeRate = 4f;
+        public virtual int rechargeHitChance { get; private set; } = 10;
+        public virtual float rechargeRate { get; private set; } = 4f;
 
         // Dodge
-        public const int dodgeHitChance = -30;
-        public const float dodgeEnergyReChargeRate = 0.5f;
+        public virtual int dodgeHitChance { get; private set; } = -30;
+        public virtual float dodgeEnergyReChargeRate { get; private set; } = 0.5f;
 
         // Heal
-        public const int healCost = 10;
+        public virtual int healCost { get; private set; } = 10;
         // \/ Not used yet.
-        public const float energyConvertion = 0.5f;
+        public virtual float energyConvertion { get; private set; } = 0.5f;
 
-        public void NewCreature()
+        public virtual void NewCreature()
         {
             ResetStats();
             //health = maxHealth;
@@ -112,24 +121,24 @@ namespace RougeGame
             //hitChanceAddition = 0;
         }
 
-        public void ResetMultipliers()
+        public virtual void ResetMultipliers()
         {
             energyRechargeMult = 1;
             hitChanceAddition = 0;
         }
 
-        public void ResetStats()
+        public virtual void ResetStats()
         {
             health = maxHealth;
             energy = maxEnergy;
         }
 
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             health -= damage;
         }
 
-        public void Heal()
+        public virtual void Heal()
         {
             energy -= healCost;
 
@@ -143,7 +152,7 @@ namespace RougeGame
             energy /= 2;
         }
 
-        public void RechargeEnergy()
+        public virtual void RechargeEnergy()
         {
             energy += (int)(rechargeRate * energyRechargeMult);
 
@@ -152,5 +161,15 @@ namespace RougeGame
                 energy = maxEnergy;
             }
         }
+    }
+
+    public class StandardCreature : CreatureBase
+    {
+        // nothing to be added yet
+    }
+
+    public class BossCreature : CreatureBase
+    {
+        public override int maxHealth { get; set; } = 200;
     }
 }

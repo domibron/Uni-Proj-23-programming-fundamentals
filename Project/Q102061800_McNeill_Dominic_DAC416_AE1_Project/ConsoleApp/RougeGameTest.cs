@@ -49,7 +49,7 @@ namespace RougeGame
             // variables for test cases.
             // Yes, it could be null, but it should not.
             int minValue = (int)Enum.GetValues(typeof(Moves)).GetValue(0);
-            int maxValue = (int)Enum.GetValues(typeof(Moves)).GetValue(Enum.GetValues(typeof(Moves)).Length-1);
+            int maxValue = (int)Enum.GetValues(typeof(Moves)).GetValue(Enum.GetValues(typeof(Moves)).Length - 1);
 
             if (minValue == null || maxValue == null)
             {

@@ -36,7 +36,11 @@ namespace RougeGame
             float pixelLength = (float)Console.BufferWidth / (Console.BufferWidth - spacerSize);
 
             float barOnePixelValue = (barOneValue / barOneTotal) * barWidth * pixelLength;
-            float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength) + (Console.BufferWidth - barWidth);
+            //float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength) + (Console.BufferWidth - barWidth);
+
+            float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength);
+
+            barTwoPixelValue = (Console.BufferWidth - barTwoPixelValue);
 
             for (int i = 0; i < Console.BufferWidth; i++)
             {
@@ -54,11 +58,11 @@ namespace RougeGame
                 {
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, spacerColour);
                 }
-                else if (barTwoPixelValue >= i * pixelLength && i >= barWidth + barSpacer)
+                else if (barTwoPixelValue < i * pixelLength && i >= barWidth + barSpacer)
                 {
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, barTwoColour);
                 }
-                else if (barTwoPixelValue < i * pixelLength && i >= barWidth + barSpacer)
+                else if (barTwoPixelValue >= i * pixelLength && i >= barWidth + barSpacer)
                 {
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
@@ -129,15 +133,15 @@ namespace RougeGame
             Console.WriteLine("");
         }
 
-        public static int[,] Initialise()
-        {
-            int height = Console.BufferHeight;
-            int width = Console.BufferWidth;
+        //public static int[,] Initialise()
+        //{
+        //    int height = Console.BufferHeight;
+        //    int width = Console.BufferWidth;
 
-            Console.WriteLine(height + " " + width);
+        //    Console.WriteLine(height + " " + width);
 
-            return new int[height, width];
-        }
+        //    return new int[height, width];
+        //}
 
 
         // windows only. cannot use on other platforms.
@@ -146,7 +150,61 @@ namespace RougeGame
             Console.SetBufferSize(height, width);
         }
 
-        public static void DrawImageTest(int[,] imageMatrix)
+
+        public static void DrawImage(List<List<int>> imageMatrix)
+        {
+
+
+            //int[,] image =
+            //    {
+            //    {-1,4,4,4,-1,0},
+            //    {4,4,11,11,0,0},
+            //    {4,4,4,4,0,0},
+            //    {0,4,0,4,0,0},
+            //    {0,4,0,4,0,0},
+            //    {0,4,0,4,0,0},
+            //    {0,7,6,7,6,0},
+            //    {0,7,7,8,7,8}
+            //};
+
+            // gets the length of the x axis and loops through it.
+            for (int y = 0; y < imageMatrix.Count; y++)
+            {
+                // gets the length of the y axis and loops through it.
+                for (int x = 0; x < imageMatrix[y].Count; x++)
+                {
+                    if (imageMatrix[y][x] >= 0)
+                    {
+                        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), Enum.GetName(typeof(ConsoleColor), imageMatrix[y][x]));
+                    }
+                    else if (imageMatrix[y][x] == -1)
+                    {
+                        (int cursorX, int cursorY) = Console.GetCursorPosition();
+
+                        Console.SetCursorPosition(cursorX + 1, cursorY);
+                        Console.ForegroundColor = Console.BackgroundColor;
+                        Console.SetCursorPosition(cursorX, cursorY);
+                    }
+                    else if (imageMatrix[y][x] == -2)
+                    {
+                        (int cursorX, int cursorY) = Console.GetCursorPosition();
+
+                        Console.SetCursorPosition(cursorX + 1, cursorY);
+                        Console.ForegroundColor = Console.ForegroundColor;
+                        Console.SetCursorPosition(cursorX, cursorY);
+                    }
+
+
+                    Console.Write(Pixel);
+
+                }
+
+                Console.Write("\n");
+            }
+        }
+
+
+        public static void DrawImage(int[,] imageMatrix)
         {
 
 

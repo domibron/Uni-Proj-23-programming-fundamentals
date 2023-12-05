@@ -177,6 +177,7 @@ namespace RougeGame
                 // start of better logic
 
                 // for now, stops the player of spamming attack.
+                // not really, the player can still win.
 
                 if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 0)
                 {
@@ -190,13 +191,7 @@ namespace RougeGame
                     move = Moves.Recharge;
                     inLoop = false;
                 }
-                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.5f && computerCreature.energy > 20)
-                {
-                    action.heal = false;
-                    move = Moves.SpecialAttack;
-                    inLoop = false;
-                }
-                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 5)
+                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.3f && computerCreature.energy > 5)
                 {
                     action.heal = false;
                     move = Moves.Attack;

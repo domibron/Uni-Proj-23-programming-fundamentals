@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace RougeGame
 {
@@ -13,6 +12,14 @@ namespace RougeGame
         public static void RunGame()
         {
             RougeGameFileSystem.LoadAllImages();
+
+            RougeGameSaveManager.instance = new RougeGameSaveManager();
+
+            RougeGameSaveManager.instance.Initilize();
+
+            Console.WriteLine(RougeGameSaveData.current.rougeGameData.gamesPlayed);
+
+            //Console.Read();
 
             bool PlayerEnteredOption = false;
 
@@ -27,7 +34,10 @@ namespace RougeGame
                 if (RougeGameFileSystem.Images.TryGetValue("logo", out logo))
                     RougeGameUI.DrawImage(RougeGameFileSystem.Images["logo"]);
 
+                RougeGameUtil.DisplayText("Save Info:");
+                RougeGameUtil.DisplayText($"Games Played: {RougeGameSaveData.current.rougeGameData.gamesPlayed}\nGames Won: {RougeGameSaveData.current.rougeGameData.gamesWon}\nGames Lost: {RougeGameSaveData.current.rougeGameData.gamesLossed}\nScore: {RougeGameSaveData.current.rougeGameData.score}");
                 RougeGameUtil.DisplayText("");
+
                 RougeGameUtil.DisplayText("      MENU");
                 RougeGameUtil.DisplayText("");
                 RougeGameUtil.DisplayText("[1] - Play Game\n[2] - Quit\n");
@@ -36,7 +46,22 @@ namespace RougeGame
 
                 if (input == "1")
                 {
-                    GameCore();
+                    int gameResult = GameCore();
+
+                    if (gameResult == 1)
+                    {
+                        RougeGameSaveData.current.rougeGameData.gamesPlayed++;
+                        RougeGameSaveData.current.rougeGameData.gamesWon++;
+
+                        RougeGameSaveManager.instance.Save();
+                    }
+                    else if (gameResult == 2)
+                    {
+                        RougeGameSaveData.current.rougeGameData.gamesPlayed++;
+                        RougeGameSaveData.current.rougeGameData.gamesLossed++;
+
+                        RougeGameSaveManager.instance.Save();
+                    }
                 }
                 else if (input == "2")
                 {
@@ -150,6 +175,8 @@ namespace RougeGame
 
                     WhilePlayerIsInGame = false;
 
+                    return 1;
+
                     //Player.NewCreature();
                     //Computer.NewCreature();
                 }
@@ -163,6 +190,8 @@ namespace RougeGame
                     Console.ReadLine();
 
                     WhilePlayerIsInGame = false;
+
+                    return 2;
 
                     //Player.NewCreature();
                     //Computer.NewCreature();

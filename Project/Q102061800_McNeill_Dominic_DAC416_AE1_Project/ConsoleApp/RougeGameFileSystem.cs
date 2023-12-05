@@ -53,30 +53,32 @@ namespace RougeGame
             //{
             FileStream fs = new FileStream(Path.Combine(folderName,fileName), FileMode.OpenOrCreate, FileAccess.Read);
 
-                StreamReader sr = new StreamReader(fs);
+            StreamReader sr = new StreamReader(fs);
 
-                string text = sr.ReadToEnd();
+            string text = sr.ReadToEnd();
 
-                string[] lineSegments = text.Split("\n");
+            string[] lineSegments = text.Split("\n");
 
-                List<List<int>> final2DArray = new List<List<int>>();
+            List<List<int>> final2DArray = new List<List<int>>();
 
-                for (int iy = 0; iy < lineSegments.Length; iy++)
+            for (int iy = 0; iy < lineSegments.Length; iy++)
+            {
+                // can make smaller.
+                final2DArray.Add(new List<int>());
+                string[] CharacterSegments = lineSegments[iy].Split(",");
+
+                for (int ix = 0; ix < CharacterSegments.Length; ix++)
                 {
-                    // can make smaller.
-                    final2DArray.Add(new List<int>());
-                    string[] CharacterSegments = lineSegments[iy].Split(",");
-
-                    for (int ix = 0; ix < CharacterSegments.Length; ix++)
-                    {
-                        final2DArray[iy].Add(Convert.ToInt32(CharacterSegments[ix]));
-                    }
-                    
+                    final2DArray[iy].Add(Convert.ToInt32(CharacterSegments[ix]));
                 }
+                    
+            }
 
-                RougeGameUtil.DisplayText("Operation Successful", ConsoleColor.DarkGreen);
+            RougeGameUtil.DisplayText("Operation Successful", ConsoleColor.DarkGreen);
 
-                return final2DArray;
+            sr.Close();
+
+            return final2DArray;
             //}
             //catch (Exception e)
             //{

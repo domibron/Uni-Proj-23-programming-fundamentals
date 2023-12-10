@@ -95,7 +95,7 @@ namespace RougeGame
 
                 RougeGameUtil.DisplayText(displayInfo);
 
-                // GUI UI
+                // GUI UI (BARS)
                 RougeGameUI.DrawUIBars(Player.health, Player.maxHealth, ConsoleColor.Red, Computer.health, Computer.maxHealth, ConsoleColor.DarkRed);
                 RougeGameUI.DrawUIBars(Player.energy, Player.maxEnergy, ConsoleColor.Green, Computer.energy, Computer.maxEnergy, ConsoleColor.DarkGreen);
 

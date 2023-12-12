@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RougeGame.Util;
+using RougeGame.LogSystem;
 using RougeGame.GameMoves;
 
 namespace RougeGame.Test
@@ -14,6 +15,8 @@ namespace RougeGame.Test
 
         public static bool TestAll()
         {
+             RougeGameLogSystem.Instance.WriteLine("START OF TESTING");
+
             const int totalTest = 3;
             
             int testCount = 0;
@@ -36,12 +39,14 @@ namespace RougeGame.Test
             // checks to see if all tests passed.
             if (testCount == totalTest)
             {
-                RougeGameUtil.DisplayText($"All tests passed: {testCount} / {totalTest}", ConsoleColor.DarkGreen);
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed: {testCount} / {totalTest}");
+                 RougeGameLogSystem.Instance.WriteLine("END OF TESTING");
                 return true;
             }
             else
             {
-                RougeGameUtil.DisplayText($"one or more tests failed: {testCount} / {totalTest}", ConsoleColor.DarkRed);
+                RougeGameLogSystem.Instance.WriteLine($"one or more tests failed: {testCount} / {totalTest}");
+                 RougeGameLogSystem.Instance.WriteLine("END OF TESTING");
                 return false;
             }
         }
@@ -55,70 +60,54 @@ namespace RougeGame.Test
 
             if (minValue == null || maxValue == null)
             {
-                RougeGameUtil.DisplayText($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!", ConsoleColor.Red);
+                RougeGameLogSystem.Instance.WriteLine($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!");
             }
 
             // variable used inside testing.
             int testsPassed = 0;
             int intParseValue;
 
-            RougeGameUtil.DisplayText($"Testing convert int into moves", ConsoleColor.Blue);
+            RougeGameLogSystem.Instance.WriteLine($"Testing convert int into moves");
 
             foreach (string input in allInput)
             {
-                RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
+                RougeGameLogSystem.Instance.WriteLine($"Test: {input}");
 
                 bool intResult = int.TryParse(input, out intParseValue);
 
-                Moves conformationValue = new();
+                Moves? result = RougeGameUtil.ConvertIntIntoMoves(intParseValue);
+                
+                Moves? moveConvert;
 
-                Moves result = RougeGameUtil.ConvertIntIntoMoves(intParseValue);
-
-                foreach (int moveInt in Enum.GetValues(typeof(Moves)))
-                {
-                    if (moveInt == intParseValue)
-                    {
-                        conformationValue = (Moves)Enum.Parse(typeof(Moves), (string)Enum.GetName(typeof(Moves), (int)moveInt));
-                    }
+                try 
+                { 
+                    moveConvert = (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), int.Parse(input)));
                 }
-
-
-
-                // Yes, it could be null.
-                // Sure, Sure.
-
-                Console.WriteLine(result);
-
-                if (intParseValue <= minValue || intParseValue >= maxValue)
+                catch
                 {
-                    RougeGameUtil.DisplayText($"{minValue} {maxValue}");
+                    moveConvert = null;
                 }
-                else if (result != (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1))) && (intParseValue < maxValue || intParseValue > minValue))
-                {
-                    RougeGameUtil.DisplayText($"Test passed: !{result}, !{input}", ConsoleColor.Green);
+                
 
+                if (moveConvert == null && result == null)
+                {
+                    RougeGameLogSystem.Instance.WriteLine($"null = null");
                     testsPassed++;
-
-                    // reset values incase the stored value is also a pass case for the next test.
-                    intParseValue = -999;
                 }
-                // checks if the result is the same as the int parse and the result is within the min and max values.
-                else if (result == (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), Enum.GetValues(typeof(Moves)).GetValue(intParseValue-1))) && (intParseValue < maxValue || intParseValue > minValue))
+                else if (moveConvert == result)
                 {
-                    RougeGameUtil.DisplayText($"Test passed: {result} = {input}", ConsoleColor.Green);
-
+                    RougeGameLogSystem.Instance.WriteLine($"{moveConvert} = {result}");
                     testsPassed++;
-
-                    // reset values incase the stored value is also a pass case for the next test.
-                    intParseValue = -999;
                 }
-                // if both checks fail then the test failed.
                 else
                 {
-                    RougeGameUtil.DisplayText($"Test failed: {result}, {input}", ConsoleColor.Red);
-
-                    intParseValue = -999;
+                    RougeGameLogSystem.Instance.WriteLine($"{moveConvert} = {result}");
                 }
+
+
+                // reset values
+                moveConvert = null;
+                intParseValue = -999;
             }
 
 
@@ -126,12 +115,12 @@ namespace RougeGame.Test
             int total = allInput.Length;
             if (testsPassed == total)
             {
-                RougeGameUtil.DisplayText($"All tests passed. tests passed: {testsPassed} / {total}", ConsoleColor.DarkGreen);
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed. tests passed: {testsPassed} / {total}");
                 return true;
             }
             else
             {
-                RougeGameUtil.DisplayText($"Faliure of test. tests passed: {testsPassed} / {total}", ConsoleColor.DarkRed);
+                RougeGameLogSystem.Instance.WriteLine($"Failure of test. tests passed: {testsPassed} / {total}");
                 return false;
             }
         }
@@ -145,7 +134,7 @@ namespace RougeGame.Test
 
             if (minValue == null || maxValue == null)
             {
-                RougeGameUtil.DisplayText($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!", ConsoleColor.Red);
+                RougeGameLogSystem.Instance.WriteLine($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!");
             }
 
             // variable used inside testing.
@@ -153,11 +142,11 @@ namespace RougeGame.Test
             int value;
             int intParseValue;
 
-            RougeGameUtil.DisplayText($"Testing handle player input", ConsoleColor.Blue);
+            RougeGameLogSystem.Instance.WriteLine($"Testing handle player input");
 
             foreach (string input in allInput)
             {
-                RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
+                RougeGameLogSystem.Instance.WriteLine($"Test: {input}");
 
                 int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, input);
 
@@ -166,7 +155,7 @@ namespace RougeGame.Test
                 // Checks if the value is invalidated and outside the min and max values.
                 if (result == 0 && (intParseValue < minValue || intParseValue > maxValue))
                 {
-                    RougeGameUtil.DisplayText($"Test passed: !{result}, !{input}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: !{result}, !{input}");
 
                     testsPassed++;
 
@@ -177,7 +166,7 @@ namespace RougeGame.Test
                 // checks if the result is the same as the int parse and the result is within the min and max values.
                 else if (result == intParseValue && result <= maxValue && result >= minValue)
                 {
-                    RougeGameUtil.DisplayText($"Test passed: {result} = {input}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: {result} = {input}");
 
                     testsPassed++;
 
@@ -188,7 +177,7 @@ namespace RougeGame.Test
                 // if both checks fail then the test failed.
                 else
                 {
-                    RougeGameUtil.DisplayText($"Test failed: {result}, {input}", ConsoleColor.Red);
+                    RougeGameLogSystem.Instance.WriteLine($"Test failed: {result}, {input}");
 
                     value = -999;
                     intParseValue = -999;
@@ -200,12 +189,12 @@ namespace RougeGame.Test
             int total = allInput.Length;
             if (testsPassed == total)
             {
-                RougeGameUtil.DisplayText($"All tests passed. tests passed: {testsPassed} / {total}", ConsoleColor.DarkGreen);
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed. tests passed: {testsPassed} / {total}");
                 return true;
             }
             else
             {
-                RougeGameUtil.DisplayText($"Faliure of test. tests passed: {testsPassed} / {total}", ConsoleColor.DarkRed);
+                RougeGameLogSystem.Instance.WriteLine($"Failure of test. tests passed: {testsPassed} / {total}");
                 return false;
             }
         }
@@ -219,7 +208,7 @@ namespace RougeGame.Test
 
             if (minValue == null || maxValue == null)
             {
-                RougeGameUtil.DisplayText($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!", ConsoleColor.Red);
+                RougeGameLogSystem.Instance.WriteLine($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!");
             }
 
             // variable used inside testing.
@@ -228,12 +217,12 @@ namespace RougeGame.Test
             int intParseValue;
 
 
-            RougeGameUtil.DisplayText($"Testing validate input", ConsoleColor.Blue);
+            RougeGameLogSystem.Instance.WriteLine($"Testing validate input");
 
 
             foreach (string input in allInput)
             {
-                RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
+                RougeGameLogSystem.Instance.WriteLine($"Test: {input}");
                 bool result = RougeGameUtil.ValidateInput(input, out value, minValue, maxValue);
 
                 bool intResult = int.TryParse(input, out intParseValue);
@@ -242,7 +231,7 @@ namespace RougeGame.Test
                 // the value from the validation is within the minValue and maxValue.
                 if (result && intResult && value == intParseValue && value <= maxValue && value >= minValue)
                 {
-                    RougeGameUtil.DisplayText($"Test passed: {value} = {intParseValue}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: {value} = {intParseValue}");
                     testsPassed++;
 
                     // reset values incase the stored value is also a pass case for the next test.
@@ -254,7 +243,7 @@ namespace RougeGame.Test
                 // while the validated value is outside the min and max values.
                 else if ((!result && !intResult) || (!result && value == intParseValue && value > maxValue || value < minValue))
                 {
-                    RougeGameUtil.DisplayText($"Test passed: !{value}, !{intParseValue}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: !{value}, !{intParseValue}");
                     testsPassed++;
 
                     // reset values incase the stored value is also a pass case for the next test.
@@ -264,7 +253,7 @@ namespace RougeGame.Test
                 // if both cases fail thenm the test failed.
                 else
                 {
-                    RougeGameUtil.DisplayText($"Test failed: {value}, {intParseValue}", ConsoleColor.Red);
+                    RougeGameLogSystem.Instance.WriteLine($"Test failed: {value}, {intParseValue}");
 
                     // reset values incase the stored value is also a pass case for the next test.
                     value = -999;
@@ -277,12 +266,12 @@ namespace RougeGame.Test
             int total = allInput.Length;
             if (testsPassed == total)
             {
-                RougeGameUtil.DisplayText($"All tests passed. tests passed: {testsPassed} / {total}", ConsoleColor.DarkGreen);
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed. tests passed: {testsPassed} / {total}");
                 return true;
             }
             else
             {
-                RougeGameUtil.DisplayText($"Faliure of test. tests passed: {testsPassed} / {total}", ConsoleColor.DarkRed);
+                RougeGameLogSystem.Instance.WriteLine($"Failure of test. tests passed: {testsPassed} / {total}");
                 return false;
             }
 
@@ -299,7 +288,7 @@ namespace RougeGame.Test
 
             if (minValue == null || maxValue == null)
             {
-                RougeGameUtil.DisplayText($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!", ConsoleColor.Red);
+                RougeGameLogSystem.Instance.WriteLine($"CANNOT TEST WITH NULL VALUES, PUT SOME IN HERE!");
             }
 
             // variable used inside testing.
@@ -307,11 +296,11 @@ namespace RougeGame.Test
             int value;
             int intParseValue;
 
-            RougeGameUtil.DisplayText($"Testing handle player input", ConsoleColor.Blue);
+            RougeGameLogSystem.Instance.WriteLine($"Testing handle player input");
 
             foreach (string input in allInput)
             {
-                RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
+                RougeGameLogSystem.Instance.WriteLine($"Test: {input}");
 
                 int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, input);
 
@@ -320,7 +309,7 @@ namespace RougeGame.Test
                 // Checks if the value is invalidated and outside the min and max values.
                 if (result == 0 && (intParseValue < minValue || intParseValue > maxValue))
                 {
-                    RougeGameUtil.DisplayText($"Test passed: !{result}, !{input}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: !{result}, !{input}");
 
                     testsPassed++;
 
@@ -331,7 +320,7 @@ namespace RougeGame.Test
                 // checks if the result is the same as the int parse and the result is within the min and max values.
                 else if (result == intParseValue && result <= maxValue && result >= minValue)
                 {
-                    RougeGameUtil.DisplayText($"Test passed: {result} = {input}", ConsoleColor.Green);
+                    RougeGameLogSystem.Instance.WriteLine($"Test passed: {result} = {input}");
 
                     testsPassed++;
 
@@ -342,7 +331,7 @@ namespace RougeGame.Test
                 // if both checks fail then the test failed.
                 else
                 {
-                    RougeGameUtil.DisplayText($"Test failed: {result}, {input}", ConsoleColor.Red);
+                    RougeGameLogSystem.Instance.WriteLine($"Test failed: {result}, {input}");
 
                     value = -999;
                     intParseValue = -999;
@@ -354,12 +343,12 @@ namespace RougeGame.Test
             int total = allInput.Length;
             if (testsPassed == total)
             {
-                RougeGameUtil.DisplayText($"All tests passed. tests passed: {testsPassed} / {total}", ConsoleColor.DarkGreen);
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed. tests passed: {testsPassed} / {total}");
                 return true;
             }
             else
             {
-                RougeGameUtil.DisplayText($"Faliure of test. tests passed: {testsPassed} / {total}", ConsoleColor.DarkRed);
+                RougeGameLogSystem.Instance.WriteLine($"Failure of test. tests passed: {testsPassed} / {total}");
                 return false;
             }
         }

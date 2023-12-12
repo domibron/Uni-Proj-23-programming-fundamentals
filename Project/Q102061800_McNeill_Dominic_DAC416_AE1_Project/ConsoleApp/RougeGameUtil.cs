@@ -58,71 +58,55 @@ namespace RougeGame.Util
             return true;
         }
 
+        // generates a random int between the set values.
         public static int RandomInt(int min, int max)
         {
+            // import random. terrible placement, can move somewhere else. this is inaficiant.
             Random rnd = new Random();
             // add a additional 1 to max value because it only does between min max and not equal to.
             return rnd.Next(min, max+1);
         }
 
-        public static Moves ConvertIntIntoMoves(int value)
+        public static Moves? ConvertIntIntoMoves(int value)
         {
-            //// we get the all the int representations of the Moves values. 0 = Attack.
-            //foreach (var move in Enum.GetValues(typeof(Moves)))
-            //{
-            //    // Check to see if the move is the same as the value.
-            //    if ((int)move == value)
-            //    {
-            //        // returns the enum of the selected value
-            //        return (Moves)Enum.Parse(typeof(Moves), Enum.GetName(typeof(Moves), (int)move));
-            //    }
-            //}
-
             string? nameOfMove = Enum.GetName(typeof(Moves), (int)value);
 
             if (nameOfMove != null)
                 // returns the enum of the selected value
                 return (Moves)Enum.Parse(typeof(Moves), nameOfMove);
             else 
-                return Moves.Attack;
-
-            //switch (value)
-            //{
-            //    case 1:
-            //        return Moves.Attack;
-            //    case 2:
-            //        return Moves.SpecialAttack;
-            //    case 3:
-            //        return Moves.Recharge;
-            //    case 4:
-            //        return Moves.Dodge;
-            //    case 5:
-            //        return Moves.Heal;
-            //}
-
-            RougeGameUtil.DisplayText("ERROR IN CONVERSION", ConsoleColor.DarkRed);
-            return Moves.Attack;
+                return null;
         }
 
+        // this returns the sring size of the text.
         public static int StringSize(string text)
         {
+            // turns the string into a character arry.
             char[] chars = text.ToCharArray();
+            // retrn the length.
             return chars.Length + 1;
         }
 
+        // adds spacing after the text that is a set size. this allows two columns to be alligned properly.
         public static string PutSpacingInString(string text, int SpaceForText)
         {
+            // gets the size of the string.
             int size = RougeGameUtil.StringSize(text);
 
+            // remove the size of the string from the spacer.
             int remaningSpace = SpaceForText - size;
 
+            // creates a new string for the spacing.
             string spacing = "";
 
+            // repeats for the ammount.
             for (int i = 0; i <= remaningSpace; i++)
             {
+                // adds a space to the string.
                 spacing += " ";
             }
 
+            // returns the combined string test and spacing.
             return text + spacing;
         }
     }

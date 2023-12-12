@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-using RougeGame.Util;
+using RougeGame.LogSystem;
 
 namespace RougeGame.SaveSystem
 {
@@ -201,7 +201,7 @@ namespace RougeGame.SaveSystem
                 catch
                 {
                     // display a error message.
-                    RougeGameUtil.DisplayText($"Failed to load file at {path}");
+                    RougeGameLogSystem.Instance.WriteLine($"Failed to load file at {path}");
                     // close the file steam.
                     file.Close();
                     // return null as the data does not exsits.

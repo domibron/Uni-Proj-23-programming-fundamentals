@@ -9,6 +9,8 @@ using RougeGame.SaveSystem;
 using RougeGame.FileSystem;
 using RougeGame.GameMoves;
 using RougeGame.GameCreatures;
+using RougeGame.LogSystem;
+using RougeGame.Test;
 
 namespace RougeGame.Core
 {
@@ -17,6 +19,12 @@ namespace RougeGame.Core
 
         public static void RunGame()
         {
+            // starts the log file
+            RougeGameLogSystem.Instance.Initilize();
+
+            // Run tests.
+            RougeGameTest.TestAll();
+
             // initialization.
             RougeGameFileSystem.LoadAllImages();
 
@@ -75,7 +83,8 @@ namespace RougeGame.Core
                     RougeGameUtil.DisplayText("Enter a valid value!");
                 }
                 else if (value == 1) 
-                { 
+                {
+                    RougeGameLogSystem.Instance.WriteLine("Started Game");
                     // runs the game and saves the result.
                     int gameResult = GameCore();
 
@@ -101,9 +110,12 @@ namespace RougeGame.Core
                         // save the data.
                         RougeGameSaveManager.instance.Save();
                     }
+                    RougeGameLogSystem.Instance.WriteLine($"Game ended {gameResult}");
+
                 }
                 else if (value == 2)
                 {
+                    RougeGameLogSystem.Instance.WriteLine($"Player Exited");
                     // save the data.
                     RougeGameSaveManager.instance.Save();
                     // exit the game.
@@ -142,7 +154,7 @@ namespace RougeGame.Core
                 RougeGameUI.DrawUIBars(Player.health, Player.maxHealth, ConsoleColor.Red, Computer.health, Computer.maxHealth, ConsoleColor.DarkRed);
                 RougeGameUI.DrawUIBars(Player.energy, Player.maxEnergy, ConsoleColor.Green, Computer.energy, Computer.maxEnergy, ConsoleColor.DarkGreen);
 
-
+                // 
                 GameAction PlayerAction = new GameAction();
                 GameAction ComputerAction = new GameAction();
 

@@ -69,7 +69,7 @@ namespace RougeGame.GameMoves
         // TODO: look into making it work for both attack and special attack. or maybe not.
         public static bool Attack(ref CreatureBase CreatureAttacking, ref CreatureBase EnemyCreature)
         {
-            // cost energy.
+            // cost energy. deducts the attack cost from the current creature 's energy.
             CreatureAttacking.energy -= CreatureAttacking.attackCost;
 
             // random percent.
@@ -78,6 +78,7 @@ namespace RougeGame.GameMoves
             // check to see if the value is less than because 80 chance to hit means <= or it will be 20 if >=.
             if (rnd <= CreatureAttacking.attackHitChance + CreatureAttacking.hitChanceAddition)
             {
+                // deal random damage within a range.
                 EnemyCreature.TakeDamage(RougeGameUtil.RandomInt(CreatureAttacking.attackDamageMin, CreatureAttacking.attackDamageMax));
                 return true;
             }
@@ -89,15 +90,16 @@ namespace RougeGame.GameMoves
 
         public static bool SpecialAttack(CreatureBase CreatureAttacking, CreatureBase EnemyCreature)
         {
-            // cost energy.
+            // cost energy. deducts the attack cost from the current creature 's energy.
             CreatureAttacking.energy -= CreatureAttacking.specialAttackCost;
 
-            // random percent.
+            // random percent. 0% to 100%
             int rnd = RougeGameUtil.RandomInt(0, 100);
 
             // check to see if the value is less than because 80 chance to hit means <= or it will be 20 if >=.
             if (rnd <= CreatureAttacking.specialAttackHitChance + CreatureAttacking.hitChanceAddition)
             {
+                // deal random damage within a range.
                 EnemyCreature.TakeDamage(RougeGameUtil.RandomInt(CreatureAttacking.specialAttackDamageMin, CreatureAttacking.specialAttackDamageMax));
                 return true;
             }

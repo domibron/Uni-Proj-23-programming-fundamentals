@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RougeGame.Util;
+using RougeGame.LogSystem;
 
 namespace RougeGame.FileSystem
 {
@@ -21,6 +21,7 @@ namespace RougeGame.FileSystem
         // the name of all the files.
         public static List<string> fileNames = new List<string>();
 
+  
         // Loads all the images in the image folder.
         public static void LoadAllImages()
         {
@@ -57,8 +58,6 @@ namespace RougeGame.FileSystem
                 Directory.CreateDirectory(Path.GetFileName(folderName));
             }
 
-            Console.WriteLine(fileName);
-
             FileStream fs = new FileStream(Path.Combine(folderName,fileName), FileMode.OpenOrCreate, FileAccess.Read);
 
             StreamReader sr = new StreamReader(fs);
@@ -82,9 +81,10 @@ namespace RougeGame.FileSystem
                     
             }
 
-            RougeGameUtil.DisplayText("Operation Successful", ConsoleColor.DarkGreen);
+            RougeGameLogSystem.Instance.WriteLine("Operation Successful");
 
             sr.Close();
+            fs.Close();
 
             return final2DArray;
         }

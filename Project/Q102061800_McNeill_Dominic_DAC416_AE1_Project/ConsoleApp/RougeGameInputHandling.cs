@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using RougeGame.Util;
 using RougeGame.GameMoves;
 using RougeGame.GameCreatures;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace RougeGame
 {
@@ -16,27 +14,34 @@ namespace RougeGame
     {
         // a bit of spice. Using this so automatic testing can be carried out.
         // using my own version of read line so i can 
-        [UnsupportedOSPlatform("android")]
-        [UnsupportedOSPlatform("browser")]
-        public static string? ReadLine(string input = "")
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return Console.In.ReadLine();
-            }
-            else
-            {
-                return input;
-            }
-        }
+        //public static string? ReadLine(string input = "")
+        //{
+        //    if (string.IsNullOrEmpty(input))
+        //    {
+        //        return Console.In.ReadLine();
+        //    }
+        //    else
+        //    {
+        //        return input;
+        //    }
+        //}
 
-        public static int HandlePlayerInput(string msg, int minValue, int maxValue, string forcedInput = "")
+        public const string bypassToken = "8Bwgnz9nWX";
+
+        public static int HandlePlayerInput(string msg, int minValue, int maxValue, string forcedInput = bypassToken)
         {
             RougeGameUtil.DisplayText(msg);
 
             string? input = "";
 
-            input = ReadLine(forcedInput);
+            if (forcedInput == bypassToken)
+            {
+                input = Console.ReadLine();
+            }
+            else
+            {
+                input = forcedInput;
+            }
 
             int value;
 
@@ -49,11 +54,20 @@ namespace RougeGame
             return 0;
         }
 
-        public static GameAction PlayerInput(int playerCreatureEnergy, string displayInfo = "")
+        public static GameAction PlayerInput(int playerCreatureEnergy, string displayInfo = "", string overrideInput = bypassToken)
         {
             GameAction returnValue = new GameAction();
 
-            bool waitingForValidInput = true;
+            bool waitingForValidInput;
+
+            if (overrideInput == bypassToken)
+            {
+                waitingForValidInput = true;
+            } 
+            else
+            {
+                waitingForValidInput  = false;
+            }
 
             const int minChoice = 1;
             const int maxChoice = 5;
@@ -102,10 +116,10 @@ namespace RougeGame
                 // end of display.
 
 
-                int value = HandlePlayerInput("\nAction:", minChoice, maxChoice);
+                int value = HandlePlayerInput("\nAction:", minChoice, maxChoice, overrideInput);
 
 
-                if (value == 0) // I dont want to automattically pick attack. I want the player to pick.
+                if (value == 0) // I dont want to automatically pick attack. I want the player to pick.
                 {
                     Console.Clear();
                     RougeGameUtil.DisplayText(displayInfo);
@@ -113,9 +127,15 @@ namespace RougeGame
                     continue;
                 }
 
-                Moves move = RougeGameUtil.ConvertIntIntoMoves(value);
+                Moves? move = RougeGameUtil.ConvertIntIntoMoves(value);
 
-                if (move == Moves.Heal && !returnValue.heal && playerCreatureEnergy >= healCost)
+                if (move == null)
+                {
+                    Console.Clear();
+                    RougeGameUtil.DisplayText(displayInfo);
+                    RougeGameUtil.DisplayText($"\nPICK A VALID OPTION!\n", ConsoleColor.Red);
+                }
+                else if (move == Moves.Heal && !returnValue.heal && playerCreatureEnergy >= healCost)
                 {
                     Console.Clear();
                     RougeGameUtil.DisplayText(displayInfo);
@@ -131,17 +151,17 @@ namespace RougeGame
                 }
                 else if (move == Moves.Attack && playerCreatureEnergy >= attackCost)
                 {
-                    returnValue.action = move;
+                    returnValue.action = move.Value;
                     waitingForValidInput = false;
                 }
                 else if (move == Moves.SpecialAttack && playerCreatureEnergy >= specialAttackCost)
                 {
-                    returnValue.action = move;
+                    returnValue.action = move.Value;
                     waitingForValidInput = false;
                 }
                 else if (move == Moves.Recharge || move == Moves.Dodge)
                 {
-                    returnValue.action = move;
+                    returnValue.action = move.Value;
                     waitingForValidInput = false;
                 }
                 else
@@ -156,32 +176,24 @@ namespace RougeGame
             return returnValue;
         }
 
+
+        // computer
+
         public static GameAction ComputerInput(CreatureBase computerCreature)
         {
             GameAction action = new GameAction();
 
+            // 
             int errorCont = 0;
 
             bool inLoop = true;
 
-            //const int minChoice = 1;
-            //const int maxChoice = 5;
-
-            //const int attackCost = 5;
-            //const int specialAttackCost = 20;
-            //const int healCost = 10;
-
             while (inLoop)
             {
-                //if (errorCont == 5)
-                //{
-                //    throw new Exception($"Computer failed to pick action, Iteration {errorCont}");
-                //}
-
-                Moves move = new Moves();
+                Moves? move = new Moves();
 
 
-                // start of better logic
+                // start of better logic.
 
                 // for now, stops the player of spamming attack.
                 // not really, the player can still win.
@@ -209,39 +221,43 @@ namespace RougeGame
                 }
 
 
-                // end of better logic
+                // end of better logic.
 
+
+                // start of old random logic.
 
                 int computerChoice = RougeGameUtil.RandomInt((int)Enum.GetValues(typeof(Moves)).GetValue(0), Enum.GetValues(typeof(Moves)).Length);
 
                 move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
+                if (move == null)
+                {
+                    // we want the computer to pick another action.
+                    continue;
+                }
+
                 if (move == Moves.Heal && !action.heal && computerCreature.health <= (computerCreature.maxHealth * 0.8f) && computerCreature.energy >= computerCreature.healCost)
                 {
                     action.heal = true;
                 }
-                //else if (computerChoice == 5 && action.heal)
-                //{
-                //    // pick again
-                //}
                 else if (move == Moves.Attack && computerCreature.energy >= computerCreature.attackCost)
                 {
-                    action.action = move;
+                    action.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.SpecialAttack && computerCreature.energy >= computerCreature.specialAttackCost)
                 {
-                    action.action = move;
+                    action.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.Recharge && computerCreature.energy <= (computerCreature.maxEnergy * 0.8f))
                 {
-                    action.action = move;
+                    action.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.Dodge)
                 {
-                    action.action = move;
+                    action.action = move.Value;
                     inLoop = false;
                 }
                 else
@@ -250,6 +266,8 @@ namespace RougeGame
                     errorCont++;
                     RougeGameUtil.DisplayText("Computer failed", ConsoleColor.Yellow);
                 }
+
+                // end of old random logic.
             }
 
             return action;

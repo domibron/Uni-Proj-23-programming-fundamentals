@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RougeGame.GameMoves;
 
-namespace RougeGame
+namespace RougeGame.Util
 {
     public class RougeGameUtil
     {

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RougeGame.Util;
+using RougeGame.GameMoves;
 
-namespace RougeGame
+namespace RougeGame.Test
 {
     public class RougeGameTest
     {
@@ -157,7 +159,7 @@ namespace RougeGame
             {
                 RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
 
-                int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, true, input);
+                int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, input);
 
                 bool intResult = int.TryParse(input, out intParseValue);
 
@@ -311,7 +313,7 @@ namespace RougeGame
             {
                 RougeGameUtil.DisplayText($"Test: {input}", ConsoleColor.DarkBlue);
 
-                int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, true, input);
+                int result = RougeGameInputHandling.HandlePlayerInput(input, minValue, maxValue, input);
 
                 bool intResult = int.TryParse(input, out intParseValue);
 

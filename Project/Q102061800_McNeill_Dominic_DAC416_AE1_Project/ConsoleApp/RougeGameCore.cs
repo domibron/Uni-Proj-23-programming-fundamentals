@@ -3,68 +3,110 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RougeGame.UI;
+using RougeGame.Util;
+using RougeGame.SaveSystem;
+using RougeGame.FileSystem;
+using RougeGame.GameMoves;
+using RougeGame.GameCreatures;
 
-namespace RougeGame
+namespace RougeGame.Core
 {
     public class RougeGameCore
     {
 
         public static void RunGame()
         {
+            // initialization.
             RougeGameFileSystem.LoadAllImages();
 
+            // set a new local instance.
             RougeGameSaveManager.instance = new RougeGameSaveManager();
+            // Initialize the instance.
+            RougeGameSaveManager.instance.Initialize();
 
-            RougeGameSaveManager.instance.Initilize();
-
-            Console.WriteLine(RougeGameSaveData.current.rougeGameData.gamesPlayed);
-
-            //Console.Read();
-
+            // sets the loop variable.
             bool PlayerEnteredOption = false;
 
-            while (!PlayerEnteredOption) { 
 
+            // start of the game.
+            while (!PlayerEnteredOption)
+            {
+                // clear the console from the debug data or previous game.
                 Console.Clear();
 
+                // display title.
                 RougeGameUtil.DisplayText("   WELCOME TO\n   ROUGE GAME!");
 
+                // create a new 2D list for the logo.
                 List<List<int>> logo = new List<List<int>>();
 
+                // if the logo exists.
                 if (RougeGameFileSystem.Images.TryGetValue("logo", out logo))
+                {
+                    // draw the logo.
                     RougeGameUI.DrawImage(RougeGameFileSystem.Images["logo"]);
+                }
 
+                // title for the save data.
                 RougeGameUtil.DisplayText("Save Info:");
+                // display the save data.
                 RougeGameUtil.DisplayText($"Games Played: {RougeGameSaveData.current.rougeGameData.gamesPlayed}\nGames Won: {RougeGameSaveData.current.rougeGameData.gamesWon}\nGames Lost: {RougeGameSaveData.current.rougeGameData.gamesLossed}\nScore: {RougeGameSaveData.current.rougeGameData.score}");
+                // create a space.
                 RougeGameUtil.DisplayText("");
 
+                // display the title for the menu.
                 RougeGameUtil.DisplayText("      MENU");
+                // create a space.
                 RougeGameUtil.DisplayText("");
+                // display options to the player.
                 RougeGameUtil.DisplayText("[1] - Play Game\n[2] - Quit\n");
 
+                // get the input from the player and store it.
                 string input = Console.ReadLine();
 
-                if (input == "1")
+                // the result of the value
+                int value;
+
+                // if the input is invalid.
+                if(!RougeGameUtil.ValidateInput(input, out value, 1, 2))
                 {
+                    // you wont see this as the screen is cleared.
+                    RougeGameUtil.DisplayText("Enter a valid value!");
+                }
+                else if (value == 1) 
+                { 
+                    // runs the game and saves the result.
                     int gameResult = GameCore();
 
+                    // if the result is 1 then the player won.
                     if (gameResult == 1)
                     {
+                        // increment the games played and games won.
                         RougeGameSaveData.current.rougeGameData.gamesPlayed++;
+                        // increment the games won.
                         RougeGameSaveData.current.rougeGameData.gamesWon++;
 
+                        // save the data.
                         RougeGameSaveManager.instance.Save();
                     }
+                    // if the result is 2 then the player lost.
                     else if (gameResult == 2)
                     {
+                        // increment the games played.
                         RougeGameSaveData.current.rougeGameData.gamesPlayed++;
+                        // increment the games lost.
                         RougeGameSaveData.current.rougeGameData.gamesLossed++;
 
+                        // save the data.
                         RougeGameSaveManager.instance.Save();
                     }
                 }
-                else if (input == "2")
+                else if (value == 2)
                 {
+                    // save the data.
+                    RougeGameSaveManager.instance.Save();
+                    // exit the game.
                     Environment.Exit(0);
                 }
 
@@ -95,6 +137,7 @@ namespace RougeGame
 
                 RougeGameUtil.DisplayText(displayInfo);
 
+                // TODO: pass into input.
                 // GUI UI (BARS)
                 RougeGameUI.DrawUIBars(Player.health, Player.maxHealth, ConsoleColor.Red, Computer.health, Computer.maxHealth, ConsoleColor.DarkRed);
                 RougeGameUI.DrawUIBars(Player.energy, Player.maxEnergy, ConsoleColor.Green, Computer.energy, Computer.maxEnergy, ConsoleColor.DarkGreen);

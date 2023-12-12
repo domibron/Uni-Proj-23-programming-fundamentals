@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RougeGame;
+using RougeGame.Util;
+using RougeGame.GameCreatures;
 
-namespace RougeGame
+namespace RougeGame.GameMoves
 {
+
     public enum Moves
     {
-        Attack=1,
-        SpecialAttack=2,
-        Recharge=3,
-        Dodge=4,
-        Heal=5
+        Attack = 1,
+        SpecialAttack = 2,
+        Recharge = 3,
+        Dodge = 4,
+        Heal = 5
     }
 
     public struct GameAction

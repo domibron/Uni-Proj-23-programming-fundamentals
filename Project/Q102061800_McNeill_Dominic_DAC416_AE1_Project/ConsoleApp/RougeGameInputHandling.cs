@@ -4,26 +4,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RougeGame.Util;
+using RougeGame.GameMoves;
+using RougeGame.GameCreatures;
+using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 
 namespace RougeGame
 {
     public class RougeGameInputHandling
     {
-       // doing // could redo to be more flexible.
-        public static int HandlePlayerInput(string msg, int minValue, int maxValue, bool debug = false, string forcedInput = "")
+        // a bit of spice. Using this so automatic testing can be carried out.
+        // using my own version of read line so i can 
+        [UnsupportedOSPlatform("android")]
+        [UnsupportedOSPlatform("browser")]
+        public static string? ReadLine(string input = "")
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return Console.In.ReadLine();
+            }
+            else
+            {
+                return input;
+            }
+        }
+
+        public static int HandlePlayerInput(string msg, int minValue, int maxValue, string forcedInput = "")
         {
             RougeGameUtil.DisplayText(msg);
 
             string? input = "";
 
-            if (!debug)
-            {
-                input = Console.ReadLine();
-            }
-            else
-            {
-                input = forcedInput;
-            }
+            input = ReadLine(forcedInput);
 
             int value;
 
@@ -51,7 +64,7 @@ namespace RougeGame
 
             while (waitingForValidInput)
             {
-
+                // display move. This is here because the window is cleared so the moves are also cleared.
                 if (playerCreatureEnergy >= attackCost)
                 {
                     RougeGameUtil.DisplayText("[1] Attack");
@@ -86,9 +99,11 @@ namespace RougeGame
                     RougeGameUtil.DisplayText("[5] Heal", ConsoleColor.DarkRed);
                 }
 
+                // end of display.
 
-                int value = RougeGameInputHandling.HandlePlayerInput("\nAction:", minChoice, maxChoice);
-                
+
+                int value = HandlePlayerInput("\nAction:", minChoice, maxChoice);
+
 
                 if (value == 0) // I dont want to automattically pick attack. I want the player to pick.
                 {
@@ -100,14 +115,6 @@ namespace RougeGame
 
                 Moves move = RougeGameUtil.ConvertIntIntoMoves(value);
 
-
-                // this hurts my eyes! AH!
-
-                /* I think maybe redo / make it more readable
-                 * Can any of this go into functions.
-                 * also relook at the flow chart
-                 */
-                
                 if (move == Moves.Heal && !returnValue.heal && playerCreatureEnergy >= healCost)
                 {
                     Console.Clear();
@@ -179,23 +186,26 @@ namespace RougeGame
                 // for now, stops the player of spamming attack.
                 // not really, the player can still win.
 
-                if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 0)
+                if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 10)
                 {
                     action.heal = true;
                     move = Moves.Dodge;
                     inLoop = false;
+                    break;
                 }
-                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy <= computerCreature.maxEnergy * 0.2f)
+                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy <= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 20)
                 {
                     action.heal = false;
                     move = Moves.Recharge;
                     inLoop = false;
+                    break;
                 }
                 else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.3f && computerCreature.energy > 5)
                 {
                     action.heal = false;
                     move = Moves.Attack;
                     inLoop = false;
+                    break;
                 }
 
 

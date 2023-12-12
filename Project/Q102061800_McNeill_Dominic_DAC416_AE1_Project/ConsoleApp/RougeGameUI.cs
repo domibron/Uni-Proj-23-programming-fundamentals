@@ -5,67 +5,77 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+using RougeGame.Util;
 
-namespace RougeGame
+namespace RougeGame.UI
 {
     public class RougeGameUI
     {
+        // squre pixel. used for images.
         public const string Pixel = "██";
+        // single pixel. used for ui.
         public const string SinglePixel = "█";
 
-        public int Height;
-        public int Width;
-
+        
         // TODO: for more flexi, need to redo for bar segments. not needed for now. mainly due to limitations in the input feilds.
 
         public static void DrawUIBars(float barOneValue, float barOneTotal, ConsoleColor barOneColour, float barTwoValue, float barTwoTotal, ConsoleColor barTwoColour, float spacerSize = 1, ConsoleColor emptyColour = ConsoleColor.Black, ConsoleColor spacerColour = ConsoleColor.DarkGray)
         {
-            /* I have no clue on how this works, there is so much math,
-             * my brain hurts. ik
-             */
-
-            // keep it hard coded for now.
+            // how many segments are there. (can adjust this to have multiple bars but rather not do that).
             float barSegments = 2f;
 
-            float barWidth = MathF.Floor((Console.BufferWidth - spacerSize) / barSegments);
+            // the width of one bar.
+            float singleBarWidth = MathF.Floor((Console.BufferWidth - spacerSize) / barSegments);
 
-            float totalBarWidth = barWidth * barSegments;
+            // the width of both bars combined.
+            float totalBarWidth = singleBarWidth * barSegments;
 
+            // the the spacer size.
             float barSpacer = Console.BufferWidth - totalBarWidth;
 
-            // can make console.buffer - spacersize into another variable.
-
+            // The new pixel length with the spacer.
             float pixelLength = (float)Console.BufferWidth / (Console.BufferWidth - spacerSize);
 
-            float barOnePixelValue = (barOneValue / barOneTotal) * barWidth * pixelLength;
-            //float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength) + (Console.BufferWidth - barWidth);
+            // the fill ammount for bar one.
+            float barOneFillValue = (barOneValue / barOneTotal) * singleBarWidth * pixelLength;
 
-            float barTwoPixelValue = ((barTwoValue / barTwoTotal) * barWidth * pixelLength);
+            // the fill ammount for bar two.
+            float barTwoFillValue = ((barTwoValue / barTwoTotal) * singleBarWidth * pixelLength);
 
-            barTwoPixelValue = (Console.BufferWidth - barTwoPixelValue);
+            // offset the pixel value.
+            barTwoFillValue = (Console.BufferWidth - barTwoFillValue);
 
+            // iterate through each pixel for the row in the console window.
             for (int i = 0; i < Console.BufferWidth; i++)
             {
-                
-                if (barOnePixelValue >= i * pixelLength && i <= barWidth)
+                // if the bar one fill ammount is higher than the current pixel value and is within the bar single length.
+                if (barOneFillValue >= i * pixelLength && i <= singleBarWidth)
                 {
+                    // draw the pixel with the bar one fill coulour.
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, barOneColour);
                 }
-                else if (barOnePixelValue < i * pixelLength && i <= barWidth)
+                // of the fill ammount is less than the current pixel value and is within the single bar length.
+                else if (barOneFillValue < i * pixelLength && i <= singleBarWidth)
                 {
+                    // draw a pixel with the empty colour.
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
-                else if (i >= barWidth && i <= barWidth + barSpacer)
+                // if the pixel is inbatween both bars.
+                else if (i >= singleBarWidth && i <= singleBarWidth + barSpacer)
                 {
+                    // draw the spacer with the space coulour.
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, spacerColour);
                 }
-                else if (barTwoPixelValue < i * pixelLength && i >= barWidth + barSpacer)
+                // is the second bar fill ammount is less than the pixel value and is in the second bar.
+                else if (barTwoFillValue < i * pixelLength && i >= singleBarWidth + barSpacer)
                 {
+                    // draw the pixel with the second bar colour.
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, barTwoColour);
                 }
-                else if (barTwoPixelValue >= i * pixelLength && i >= barWidth + barSpacer)
+                // if the second bar balue is higher than the pixel value and is in the second bar.
+                else if (barTwoFillValue >= i * pixelLength && i >= singleBarWidth + barSpacer)
                 {
+                    // draw the pixel with the empty colour.
                     RougeGameUtil.DisplayTextSameLine(SinglePixel, emptyColour);
                 }
             }
@@ -77,40 +87,48 @@ namespace RougeGame
             Console.WriteLine("");
         }
 
+
+        // draws a UI bar at a specific location.
         public static void DrawBar(float value, float total, int startY, int startX, float length)
         {
+            // set the corsor location to the specified location.
             Console.SetCursorPosition(startX, startY);
 
-            string SinglePixel = "█";
-
+            // gets the worth for each pixel.
             float pixelLength = length / total;
             
+            // gets the bar fill ammount.
             float barValue = (value / total) * length * pixelLength;
 
+            // iterate for each pixel for the console screen row.
             for (int i = 0; i < length; i++)
             {
-                
+                // if the bar value is higher than the represented value.
                 if (barValue >= i * pixelLength)
                 {
+                    // set foreground colour to red.
                     Console.ForegroundColor = ConsoleColor.Red;
+                    // write single pixel.
                     Console.Write(SinglePixel);
                 }
                 else
                 {
+                    // set the foreground colour to white.
                     Console.ForegroundColor = ConsoleColor.White;
+                    // draw the single pixel.
                     Console.Write(SinglePixel);
                 }
             }
 
+            // set the foreground color back to defualt.
             Console.ForegroundColor = ConsoleColor.White;
+            // move the corsor to a new line.
             Console.WriteLine("");
         }
 
         // draws a UI bar that scales with the console window.
         public static void DrawBar(float value, float total)
         {
-            // used to draw the bar.
-            string SinglePixel = "█";
 
             // just used to remove the Consle.BufferWidth used everywhere.
             float consoleWidth = Console.BufferWidth;

@@ -3,27 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RougeGame.Util;
 
-namespace RougeGame
+namespace RougeGame.FileSystem
 {
     public class RougeGameFileSystem
     {
+        // the suffix for the image file.
         public const string fileSuffix = ".rgimg";
 
+        // the folder name.
         public const string folderName = "Images";
 
+        // the store for all iamges key is the name of the image the value is a 2d list.
         public static Dictionary<string, List<List<int>>> Images = new Dictionary<string, List<List<int>>>();
 
+        // the name of all the files.
         public static List<string> fileNames = new List<string>();
 
+        // Loads all the images in the image folder.
         public static void LoadAllImages()
         {
-            DirectoryInfo d = new DirectoryInfo(folderName);
+            // the directory (folder) for the images.
+            DirectoryInfo directory = new DirectoryInfo(folderName);
 
-            FileInfo[] files = d.GetFiles("*" + fileSuffix);
+            // Gets all files in the image folder.
+            FileInfo[] files = directory.GetFiles("*" + fileSuffix);
 
+            // cycles through each file in files.
             foreach (FileInfo file in files)
             {
+                //
                 fileNames.Add(file.Name);
             }
 
@@ -49,8 +59,6 @@ namespace RougeGame
 
             Console.WriteLine(fileName);
 
-            //try
-            //{
             FileStream fs = new FileStream(Path.Combine(folderName,fileName), FileMode.OpenOrCreate, FileAccess.Read);
 
             StreamReader sr = new StreamReader(fs);
@@ -79,17 +87,6 @@ namespace RougeGame
             sr.Close();
 
             return final2DArray;
-            //}
-            //catch (Exception e)
-            //{
-            //    RougeGameUtil.DisplayText($"Operation Failure {e.Message}", ConsoleColor.DarkRed);
-            //}
-            //finally
-            //{
-            //    RougeGameUtil.DisplayText("Operation Compleate");
-            //}
-
-            return null;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace RougeGame.GameMoves
             CreatureDodging.energyRechargeMult = CreatureDodging.dodgeEnergyReChargeRate;
         }
 
-        // look into making it work for both attack and special attack. or maybe not.
+        // TODO: look into making it work for both attack and special attack. or maybe not.
         public static bool Attack(ref CreatureBase CreatureAttacking, ref CreatureBase EnemyCreature)
         {
             // cost energy.

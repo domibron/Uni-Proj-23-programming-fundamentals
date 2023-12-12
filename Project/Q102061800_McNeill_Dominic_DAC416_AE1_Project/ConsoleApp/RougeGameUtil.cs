@@ -61,7 +61,8 @@ namespace RougeGame.Util
         public static int RandomInt(int min, int max)
         {
             Random rnd = new Random();
-            return rnd.Next(min, max);
+            // add a additional 1 to max value because it only does between min max and not equal to.
+            return rnd.Next(min, max+1);
         }
 
         public static Moves ConvertIntIntoMoves(int value)

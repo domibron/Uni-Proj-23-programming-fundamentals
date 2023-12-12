@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RougeGame.GameCreatures
 {
+
+
+
     public struct Creature
     {
         public int maxHealth;

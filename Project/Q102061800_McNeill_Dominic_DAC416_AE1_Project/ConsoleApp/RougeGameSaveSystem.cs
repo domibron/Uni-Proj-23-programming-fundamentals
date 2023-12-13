@@ -76,10 +76,13 @@ namespace RougeGame.SaveSystem
         // creates a public access point for other classes and scripts.
         public static RougeGameSaveManager instance;
 
+        // folder name.
+        public const string folderName = "Saves";
+
         // save data name for the file.
-        public string saveName = "SAVEDATA";
+        public const string saveName = "SAVEDATA";
         // save data suffix used to make the file type.
-        public string suffix = ".SAVEDATA";
+        public const string suffix = ".SAVEDATA";
 
         // a event so any scripts and classes depended on the save data can know when a save occours.
         // normally used to refresh the local data.
@@ -112,7 +115,7 @@ namespace RougeGame.SaveSystem
             }
 
             // if the save does not exists. create a new save.
-            if (RougeGameSerializationManager.Load("saves/" + saveName + suffix) == null)
+            if (RougeGameSerializationManager.Load(folderName + "/" + saveName + suffix) == null)
             {
                 // create a new save.
                 RougeGameSerializationManager.Save(saveName, suffix, RougeGameSaveData.current);
@@ -121,7 +124,7 @@ namespace RougeGame.SaveSystem
             else
             {
                 // load the data and store it.
-                RougeGameSaveData.current = (RougeGameSaveData)RougeGameSerializationManager.Load("saves/" + saveName + suffix);
+                RougeGameSaveData.current = (RougeGameSaveData)RougeGameSerializationManager.Load(folderName + "/" + saveName + suffix);
             }
         }
 
@@ -136,97 +139,99 @@ namespace RougeGame.SaveSystem
         public RougeGameSaveData Load()
         {
             // returns the save data.
-            return (RougeGameSaveData)RougeGameSerializationManager.Load("saves/" + saveName + suffix);
+            return (RougeGameSaveData)RougeGameSerializationManager.Load(folderName + "/" + saveName + suffix);
         }
 
-        // used to serialize the data (encrypt)
-        public class RougeGameSerializationManager
+    }
+
+    // used to serialize the data (encrypt)
+    public class RougeGameSerializationManager
+    {
+        // Save data.
+        public static bool Save(string saveName, string saveSuffix, object saveData)
         {
-            // Save data.
-            public static bool Save(string saveName, string saveSuffix, object saveData)
+            // get the formatter we have generated.
+            BinaryFormatter formatter = GetBinaryFormatter();
+
+            // if the save folder does not exist.
+            if (!Directory.Exists("Saves"))
             {
-                // get the formatter we have generated.
-                BinaryFormatter formatter = GetBinaryFormatter();
+                // create a new folder called saves.
+                Directory.CreateDirectory(Path.GetFileName("Saves"));
+            }
 
-                // if the save folder does not exist.
-                if (!Directory.Exists("saves"))
-                {
-                    // create a new folder called saves.
-                    Directory.CreateDirectory(Path.GetFileName("saves"));
-                }
+            // get the path to the save data.
+            string path = "Saves/" + saveName + saveSuffix;
 
-                // get the path to the save data.
-                string path = "saves/" + saveName + saveSuffix;
+            // create (can also write over) a new file for the save data.
+            FileStream file = File.Create(path);
 
-                // create (can also write over) a new file for the save data.
-                FileStream file = File.Create(path);
+            // encrypt the data.
+            formatter.Serialize(file, saveData);
 
-                // encrypt the data.
-                formatter.Serialize(file, saveData);
+            // close the file stream. Very important.
+            // stop the application of keeping the file open and may currupt.
+            file.Close();
 
-                // close the file stream. Very important.
-                // stop the application of keeping the file open and may currupt.
+            // return sucessful.
+            return true;
+        }
+
+        // Load the file
+        public static object Load(string path)
+        {
+            // checks if the file exists.
+            if (!File.Exists(path))
+            {
+                // if the file does not exsist then return null.
+                return null;
+            }
+
+            // get the generated formatter.
+            BinaryFormatter formatter = GetBinaryFormatter();
+
+            // open the save file.
+            FileStream file = File.Open(path, FileMode.Open);
+
+            // stops the application of crashing because of a file not found exeption.
+            try
+            {
+                // decrypt the save data and store it.
+                object save = formatter.Deserialize(file);
+                // close the file steam.
                 file.Close();
-
-                // return sucessful.
-                return true;
+                // return the save data.
+                return save;
             }
-
-            // Load the file
-            public static object Load(string path)
+            catch
             {
-                // checks if the file exists.
-                if (!File.Exists(path))
-                {
-                    // if the file does not exsist then return null.
-                    return null;
-                }
-
-                // get the generated formatter.
-                BinaryFormatter formatter = GetBinaryFormatter();
-
-                // open the save file.
-                FileStream file = File.Open(path, FileMode.Open);
-
-                // stops the application of crashing because of a file not found exeption.
-                try
-                {
-                    // decrypt the save data and store it.
-                    object save = formatter.Deserialize(file);
-                    // close the file steam.
-                    file.Close();
-                    // return the save data.
-                    return save;
-                }
-                catch
-                {
-                    // display a error message.
-                    RougeGameLogSystem.Instance.WriteLine($"Failed to load file at {path}");
-                    // close the file steam.
-                    file.Close();
-                    // return null as the data does not exsits.
-                    return null;
-                }
-
+                // display a error message.
+                RougeGameLogSystem.Instance.WriteLine($"Failed to load file at {path}");
+                // close the file steam.
+                file.Close();
+                // return null as the data does not exsits.
+                return null;
             }
 
-            // used to create a formatter (the encription). you can added more sophisticated data types here such as Quaternions.
-            public static BinaryFormatter GetBinaryFormatter()
-            {
-                // create a new formatter.
-                BinaryFormatter formatter = new BinaryFormatter();
+        }
 
-                // create a new surrogate (used to tell the application how to write and read more complicated data).
-                SurrogateSelector selector = new SurrogateSelector();
+        // used to create a formatter (the encription). you can added more sophisticated data types here such as Quaternions.
+        public static BinaryFormatter GetBinaryFormatter()
+        {
+            // create a new formatter.
+            BinaryFormatter formatter = new BinaryFormatter();
 
-                // put any surrogates here.
+            // create a new surrogate (used to tell the application how to write and read more complicated data).
+            SurrogateSelector selector = new SurrogateSelector();
 
-                // set the formatter's surrogate to the new surrogate we have created.
-                formatter.SurrogateSelector = selector;
+            // put any surrogates here.
 
-                // return the formatter.
-                return formatter;
-            }
+            // set the formatter's surrogate to the new surrogate we have created.
+            formatter.SurrogateSelector = selector;
+
+            // return the formatter.
+            return formatter;
         }
     }
+    
 }

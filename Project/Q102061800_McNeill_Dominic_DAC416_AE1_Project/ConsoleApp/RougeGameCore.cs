@@ -140,11 +140,11 @@ namespace RougeGame.Core
                 // display info (TEXT)
                 string displayInfo = "";
 
-                displayInfo += RougeGameUtil.PutSpacingInString($"Player", 25);
+                displayInfo += RougeGameUtil.PutSpacingAfterString($"Player", 25);
                 displayInfo += $"Computer\n";
-                displayInfo += RougeGameUtil.PutSpacingInString($"HEALTH: [{Player.health}]", 25);
+                displayInfo += RougeGameUtil.PutSpacingAfterString($"HEALTH: [{Player.health}]", 25);
                 displayInfo += $"HEALTH: [{Computer.health}]\n";
-                displayInfo += RougeGameUtil.PutSpacingInString($"ENERGY: [{Player.energy}]", 25);
+                displayInfo += RougeGameUtil.PutSpacingAfterString($"ENERGY: [{Player.energy}]", 25);
                 displayInfo += $"ENERGY: [{Computer.energy}]\n";
 
                 RougeGameUtil.DisplayText(displayInfo);

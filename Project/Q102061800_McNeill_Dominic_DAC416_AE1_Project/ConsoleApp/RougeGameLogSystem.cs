@@ -32,7 +32,7 @@ namespace RougeGame.LogSystem
         public const string suffix = ".log";
 
         // creates a new log file that is differnt to the rest.
-        string currentLogName = $"date {DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_time_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}_ms_{DateTime.Now.Millisecond}" + suffix;
+        string currentLogName = $"date_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_time_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}_ms_{DateTime.Now.Millisecond}" + suffix;
         //string currentLogName = DateTime.Now.ToString();
 
         FileStream fs;

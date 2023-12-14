@@ -1,5 +1,6 @@
 ﻿using System;
 using RougeGame.Core;
+using RougeGame.UI;
 
 namespace ConsoleApp
 {

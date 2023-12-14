@@ -8,8 +8,10 @@ namespace RougeGame.LogSystem
 {
     public class RougeGameLogSystem
     {
+        // used to store the instance.
         private static RougeGameLogSystem _instance;
 
+        // just call this from other scripts, if the instance does not exist then it will create one.
         public static RougeGameLogSystem Instance
         {
             get
@@ -21,7 +23,7 @@ namespace RougeGame.LogSystem
 
                 return _instance;
             }
-            set // should not really use this.
+            set // should not really use this. Only this script should set.
             { 
                 _instance = value; 
             }
@@ -29,6 +31,7 @@ namespace RougeGame.LogSystem
 
         // the folder's name.
         public const string folderName = "Logs";
+        // the log file's suffix.
         public const string suffix = ".log";
 
         // creates a new log file that is differnt to the rest.
@@ -45,13 +48,16 @@ namespace RougeGame.LogSystem
 
         public void Initilize()
         {
+            // event listener is added for when the application closes. (Not for crashes).
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnExit);
 
+            // if the folder does not exist then create a folder.
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(Path.GetFileName(folderName));
             }
 
+            // can create a error when trying to open a file with a already exsiting file stream.
             try
             {
                 fs = new FileStream(Path.Combine(folderName, currentLogName), FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -64,27 +70,36 @@ namespace RougeGame.LogSystem
                 }
             }
             
+            // steam writer so writing to the file is simple with write line.
             sw = new StreamWriter(fs);
 
+            // marks the start of the log file.
             sw.WriteLine("INIT");
         }
 
+        // A function for other scripts so they can use to write to the log file.
         public void WriteLine(string text)
         {
             sw.WriteLine(text);
         }
 
+        // A function for other scripts so they can use to write on the same line in the log file.
         public void Write(string text)
         {
             sw.Write(text);
         }
 
+        // on exit function for the event.
         public void OnExit(object? sender, EventArgs e)
         {
+            // will give a error when debugging and not for the build. just stops the program from erroring on its final miliseconds.
             try
             {
+                // writes the last message.
                 sw.WriteLine("EXITED!");
+                // stop writing.
                 sw.Close();
+                // close the file and save.
                 fs.Close();
             }
             catch

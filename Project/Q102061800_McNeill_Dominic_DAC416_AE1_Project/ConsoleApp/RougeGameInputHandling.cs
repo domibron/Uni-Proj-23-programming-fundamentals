@@ -7,34 +7,20 @@ using System.Threading.Tasks;
 using RougeGame.Util;
 using RougeGame.GameMoves;
 using RougeGame.GameCreatures;
+using RougeGame.LogSystem;
 
 namespace RougeGame
 {
     public class RougeGameInputHandling
     {
-        // a bit of spice. Using this so automatic testing can be carried out.
-        // using my own version of read line so i can 
-        //public static string? ReadLine(string input = "")
-        //{
-        //    if (string.IsNullOrEmpty(input))
-        //    {
-        //        return Console.In.ReadLine();
-        //    }
-        //    else
-        //    {
-        //        return input;
-        //    }
-        //}
-
-        public const string bypassToken = "8Bwgnz9nWX";
-
-        public static int HandlePlayerInput(string msg, int minValue, int maxValue, string forcedInput = bypassToken)
+#region Player
+        public static int HandlePlayerInput(string msg, int minValue, int maxValue, string? forcedInput = null)
         {
             RougeGameUtil.DisplayText(msg);
 
             string? input = "";
 
-            if (forcedInput == bypassToken)
+            if (forcedInput == null)
             {
                 input = Console.ReadLine();
             }
@@ -54,13 +40,14 @@ namespace RougeGame
             return 0;
         }
 
-        public static GameAction PlayerInput(int playerCreatureEnergy, string displayInfo = "", string overrideInput = bypassToken)
+        public static GameAction PlayerInput(int playerCreatureEnergy, string displayInfo = "", string? overrideInput = null)
         {
             GameAction returnValue = new GameAction();
 
             bool waitingForValidInput;
 
-            if (overrideInput == bypassToken)
+            // overides the loop for testing purposes.
+            if (overrideInput == null)
             {
                 waitingForValidInput = true;
             } 
@@ -176,12 +163,17 @@ namespace RougeGame
             return returnValue;
         }
 
-
-        // computer
+#endregion
+        
+#region Computer
+        // this pervents the AI from dominating the player while staying alive. Just a AI nurf.
+        private const int BlunderChance = 50;
 
         public static GameAction ComputerInput(CreatureBase computerCreature)
         {
-            GameAction action = new GameAction();
+            
+
+            GameAction gameAction = new GameAction();
 
             // 
             int errorCont = 0;
@@ -190,34 +182,42 @@ namespace RougeGame
 
             while (inLoop)
             {
-                Moves? move = new Moves();
+
 
 
                 // start of better logic.
 
                 // for now, stops the player of spamming attack.
-                // not really, the player can still win.
 
-                if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 10)
+                int blunder = RougeGameUtil.RandomInt(1, 100);
+
+                if (blunder > BlunderChance)
                 {
-                    action.heal = true;
-                    move = Moves.Dodge;
-                    inLoop = false;
-                    break;
-                }
-                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy <= computerCreature.maxEnergy * 0.2f && computerCreature.energy > 20)
-                {
-                    action.heal = false;
-                    move = Moves.Recharge;
-                    inLoop = false;
-                    break;
-                }
-                else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.3f && computerCreature.energy > 5)
-                {
-                    action.heal = false;
-                    move = Moves.Attack;
-                    inLoop = false;
-                    break;
+
+                    if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= (computerCreature.maxEnergy * 0.8f) && computerCreature.energy > 10)
+                    {
+                        RougeGameLogSystem.Instance.WriteLine("heal");
+                        gameAction.heal = true;
+                        gameAction.action = Moves.Dodge;
+                        inLoop = false;
+                        break;
+                    }
+                    else if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy < (computerCreature.maxEnergy * 0.8f))
+                    {
+                        RougeGameLogSystem.Instance.WriteLine("recharge 1");
+                        gameAction.heal = false;
+                        gameAction.action = Moves.Recharge;
+                        inLoop = false;
+                        break;
+                    }
+                    else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.3f && computerCreature.energy > 5)
+                    {
+                        RougeGameLogSystem.Instance.WriteLine("attack");
+                        gameAction.heal = false;
+                        gameAction.action = Moves.Attack;
+                        inLoop = false;
+                        break;
+                    }
                 }
 
 
@@ -228,7 +228,7 @@ namespace RougeGame
 
                 int computerChoice = RougeGameUtil.RandomInt((int)Enum.GetValues(typeof(Moves)).GetValue(0), Enum.GetValues(typeof(Moves)).Length);
 
-                move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
+                Moves? move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
                 if (move == null)
                 {
@@ -236,28 +236,28 @@ namespace RougeGame
                     continue;
                 }
 
-                if (move == Moves.Heal && !action.heal && computerCreature.health <= (computerCreature.maxHealth * 0.8f) && computerCreature.energy >= computerCreature.healCost)
+                if (move == Moves.Heal && !gameAction.heal && computerCreature.health <= (computerCreature.maxHealth * 0.8f) && computerCreature.energy >= computerCreature.healCost)
                 {
-                    action.heal = true;
+                    gameAction.heal = true;
                 }
                 else if (move == Moves.Attack && computerCreature.energy >= computerCreature.attackCost)
                 {
-                    action.action = move.Value;
+                    gameAction.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.SpecialAttack && computerCreature.energy >= computerCreature.specialAttackCost)
                 {
-                    action.action = move.Value;
+                    gameAction.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.Recharge && computerCreature.energy <= (computerCreature.maxEnergy * 0.8f))
                 {
-                    action.action = move.Value;
+                    gameAction.action = move.Value;
                     inLoop = false;
                 }
                 else if (move == Moves.Dodge)
                 {
-                    action.action = move.Value;
+                    gameAction.action = move.Value;
                     inLoop = false;
                 }
                 else
@@ -270,7 +270,8 @@ namespace RougeGame
                 // end of old random logic.
             }
 
-            return action;
+            return gameAction;
         }
+#endregion
     }
 }

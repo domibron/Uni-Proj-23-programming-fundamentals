@@ -19,6 +19,7 @@ namespace RougeGame.UI
         
         // TODO: for more flexi, need to redo for bar segments. not needed for now. mainly due to limitations in the input feilds.
 
+        // Draws a split bar with 2 seperate bars that can have differnt values.
         public static void DrawUIBars(float barOneValue, float barOneTotal, ConsoleColor barOneColour, float barTwoValue, float barTwoTotal, ConsoleColor barTwoColour, float spacerSize = 1, ConsoleColor emptyColour = ConsoleColor.Black, ConsoleColor spacerColour = ConsoleColor.DarkGray)
         {
             // how many segments are there. (can adjust this to have multiple bars but rather not do that).

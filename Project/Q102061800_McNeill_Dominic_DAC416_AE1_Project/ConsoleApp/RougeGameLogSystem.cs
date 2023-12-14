@@ -16,11 +16,13 @@ namespace RougeGame.LogSystem
         {
             get
             {
+                // if there is no instance, create one.
                 if ( _instance == null)
                 {
                     _instance = new RougeGameLogSystem();
                 }
 
+                // retun the instance.
                 return _instance;
             }
             set // should not really use this. Only this script should set.
@@ -30,11 +32,11 @@ namespace RougeGame.LogSystem
         }
 
         // the folder's name.
-        public const string folderName = "Logs";
+        private const string folderName = "Logs";
         // the log file's suffix.
-        public const string suffix = ".log";
+        private const string suffix = ".log";
 
-        public const int maxLogSize = 10;
+        private const int maxLogSize = 10;
 
         // creates a new log file that is differnt to the rest.
         string currentLogName = $"date_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_time_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}_ms_{DateTime.Now.Millisecond}" + suffix;

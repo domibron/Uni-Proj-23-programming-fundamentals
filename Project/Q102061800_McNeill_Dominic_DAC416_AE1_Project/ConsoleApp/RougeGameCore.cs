@@ -11,6 +11,8 @@ using RougeGame.GameMoves;
 using RougeGame.GameCreatures;
 using RougeGame.LogSystem;
 using RougeGame.Test;
+using System.Collections;
+using System.Numerics;
 
 namespace RougeGame.Core
 {
@@ -94,7 +96,7 @@ namespace RougeGame.Core
                         // increment the games played and games won.
                         RougeGameSaveData.current.rougeGameData.gamesPlayed++;
                         // increment the games won.
-                        RougeGameSaveData.current.rougeGameData.gamesWon++;
+                        RougeGameSaveData.current.rougeGameData.gamesLossed++;
 
                         // save the data.
                         RougeGameSaveManager.instance.Save();
@@ -105,7 +107,9 @@ namespace RougeGame.Core
                         // increment the games played.
                         RougeGameSaveData.current.rougeGameData.gamesPlayed++;
                         // increment the games lost.
-                        RougeGameSaveData.current.rougeGameData.gamesLossed++;
+                        RougeGameSaveData.current.rougeGameData.gamesWon++;
+                        // add to score.
+                        RougeGameSaveData.current.rougeGameData.score += 100;
 
                         // save the data.
                         RougeGameSaveManager.instance.Save();
@@ -128,9 +132,13 @@ namespace RougeGame.Core
 
         public static int GameCore()
         {
+            // clear the screen.
             Console.Clear();
+
+            // set loop.
             bool WhilePlayerIsInGame = true;
 
+            // setup creatures.
             CreatureBase Player = new StandardCreature();
             CreatureBase Computer = new StandardCreature();
 
@@ -149,16 +157,16 @@ namespace RougeGame.Core
 
                 RougeGameUtil.DisplayText(displayInfo);
 
-                // TODO: pass into input.
-                // GUI UI (BARS)
+                // GUI UI (BARS) will not display if a invalid move or heal because the bars will not update.
                 RougeGameUI.DrawUIBars(Player.health, Player.maxHealth, ConsoleColor.Red, Computer.health, Computer.maxHealth, ConsoleColor.DarkRed);
                 RougeGameUI.DrawUIBars(Player.energy, Player.maxEnergy, ConsoleColor.Green, Computer.energy, Computer.maxEnergy, ConsoleColor.DarkGreen);
 
-                // 
+                // game actions for each opponent's move.
                 GameAction PlayerAction = new GameAction();
                 GameAction ComputerAction = new GameAction();
 
-                PlayerAction = RougeGameInputHandling.PlayerInput(Player.energy, displayInfo);
+                // get their move.
+                PlayerAction = RougeGameInputHandling.PlayerInput(Player, displayInfo);
                 ComputerAction = RougeGameInputHandling.ComputerInput(Computer);
 
                 // player heal.
@@ -178,7 +186,6 @@ namespace RougeGame.Core
                 {
                     RougeGameMoves.Recharge(ref Player, ref Computer);
                 }
-
                 if (PlayerAction.action == Moves.Dodge)
                 {
                     RougeGameMoves.Dodge(ref Player, ref Computer);
@@ -189,7 +196,6 @@ namespace RougeGame.Core
                 {
                     RougeGameMoves.Recharge(ref Computer, ref Player);
                 }
-
                 if (ComputerAction.action == Moves.Dodge)
                 {
                     RougeGameMoves.Dodge(ref Computer, ref Player);
@@ -200,7 +206,6 @@ namespace RougeGame.Core
                 {
                     RougeGameMoves.Attack(ref Player, ref Computer);
                 }
-
                 if (PlayerAction.action == Moves.SpecialAttack)
                 {
                     RougeGameMoves.SpecialAttack(Player, Computer);
@@ -211,19 +216,20 @@ namespace RougeGame.Core
                 {
                     RougeGameMoves.Attack(ref Computer, ref Player);
                 }
-
                 if (ComputerAction.action == Moves.SpecialAttack)
                 {
                     RougeGameMoves.SpecialAttack(Computer, Player);
                 }
 
+                // clears the screen so the player can see the game's result.
                 Console.Clear();
 
+                // if the both died then its computer win.
                 if (Player.health <= 0)
                 {
+                    // the computer won.
                     RougeGameUtil.DisplayText("You died!");
                     RougeGameUtil.DisplayText("You Lost!", ConsoleColor.Red);
-                    //return 1;
 
                     RougeGameUtil.DisplayText("\nAny key to continue");
                     Console.ReadLine();
@@ -231,15 +237,12 @@ namespace RougeGame.Core
                     WhilePlayerIsInGame = false;
 
                     return 1;
-
-                    //Player.NewCreature();
-                    //Computer.NewCreature();
                 }
                 else if (Computer.health <= 0)
                 {
+                    // the player won.
                     RougeGameUtil.DisplayText("Computer died!");
                     RougeGameUtil.DisplayText("You won!", ConsoleColor.Green);
-                    //return 2;
 
                     RougeGameUtil.DisplayText("\nAny key to continue");
                     Console.ReadLine();
@@ -247,9 +250,6 @@ namespace RougeGame.Core
                     WhilePlayerIsInGame = false;
 
                     return 2;
-
-                    //Player.NewCreature();
-                    //Computer.NewCreature();
                 }
                 else
                 {
@@ -260,16 +260,12 @@ namespace RougeGame.Core
                     Computer.ResetMultipliers();
                 }
 
+                // clean the screen.
                 Console.Clear();
             }
 
+            // return if the game errored out.
             return 0;
-
-            
         }
-    }
-
-    
-
-    
+    }  
 }

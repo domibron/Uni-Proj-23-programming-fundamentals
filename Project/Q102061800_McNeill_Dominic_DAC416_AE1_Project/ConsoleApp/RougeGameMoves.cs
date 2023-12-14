@@ -9,6 +9,7 @@ using RougeGame.GameCreatures;
 namespace RougeGame.GameMoves
 {
 
+    // used for input to move convertion.
     public enum Moves
     {
         Attack = 1,
@@ -18,6 +19,7 @@ namespace RougeGame.GameMoves
         Heal = 5
     }
 
+    // used to play game move.
     public struct GameAction
     {
         public Moves action;
@@ -36,6 +38,7 @@ namespace RougeGame.GameMoves
         }
     }
 
+    // all possible move all opponent can play.
     public class RougeGameMoves
     {
         public static void Heal(ref CreatureBase creature)

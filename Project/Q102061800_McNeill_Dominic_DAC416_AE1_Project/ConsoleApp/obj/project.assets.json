@@ -8,19 +8,24 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\2mcned00\\.nuget\\packages\\": {}
+    "C:\\Users\\dommc\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Local Repos\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\ConsoleApp.csproj",
+      "projectUniqueName": "C:\\Users\\dommc\\Desktop\\Repos\\GitKraken\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\ConsoleApp.csproj",
       "projectName": "ConsoleApp",
-      "projectPath": "D:\\Local Repos\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\ConsoleApp.csproj",
-      "packagesPath": "C:\\Users\\2mcned00\\.nuget\\packages\\",
-      "outputPath": "D:\\Local Repos\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\obj\\",
+      "projectPath": "C:\\Users\\dommc\\Desktop\\Repos\\GitKraken\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\ConsoleApp.csproj",
+      "packagesPath": "C:\\Users\\dommc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\dommc\\Desktop\\Repos\\GitKraken\\Uni-Proj-23-programming-fundamentals\\Project\\Q102061800_McNeill_Dominic_DAC416_AE1_Project\\ConsoleApp\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\2mcned00\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\dommc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -61,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }

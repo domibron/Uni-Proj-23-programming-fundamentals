@@ -11,41 +11,48 @@ namespace RougeGame.Test
 {
     public class RougeGameTest
     {
+        // what we are using to test.
         public static string[] allInput = { "0", "1", "2", "3", "4", "5", "6", "asd", "", "23.4", "3.7", "-2" };
 
+        // used to run all tests.
         public static bool TestAll()
         {
-             RougeGameLogSystem.Instance.WriteLine("START OF TESTING");
+            // log the start.
+            RougeGameLogSystem.Instance.WriteLine("START OF TESTING");
 
+            // how many tests are there.
             const int totalTest = 3;
             
-            int testCount = 0;
+            int testPassedCount = 0;
 
+            // if validate input passed.
             if (Test_ValidateInput())
             {
-                testCount++;
+                testPassedCount++;
             }
 
+            // if handle player input passed.
             if (Test_HandlePlayerInput())
             {
-                testCount++;
+                testPassedCount++;
             }
 
+            // if vconvert int into moves passed.
             if (Test_ConvertIntIntoMoves())
             {
-                testCount++;
+                testPassedCount++;
             }
 
             // checks to see if all tests passed.
-            if (testCount == totalTest)
+            if (testPassedCount == totalTest)
             {
-                RougeGameLogSystem.Instance.WriteLine($"All tests passed: {testCount} / {totalTest}");
+                RougeGameLogSystem.Instance.WriteLine($"All tests passed: {testPassedCount} / {totalTest}");
                  RougeGameLogSystem.Instance.WriteLine("END OF TESTING");
                 return true;
             }
             else
             {
-                RougeGameLogSystem.Instance.WriteLine($"one or more tests failed: {testCount} / {totalTest}");
+                RougeGameLogSystem.Instance.WriteLine($"one or more tests failed: {testPassedCount} / {totalTest}");
                  RougeGameLogSystem.Instance.WriteLine("END OF TESTING");
                 return false;
             }
@@ -278,6 +285,7 @@ namespace RougeGame.Test
         }
 
         // for copy and paste reasons. DO NOT INCLUDE IN BATCH TESTING!
+        // this marks it to not be used, the true will make the code using this throw and exeption.
         [Obsolete("Used for programming, not for game runtime.", true)]
         public static bool Test_Base()
         {

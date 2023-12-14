@@ -1,6 +1,4 @@
-﻿using System;
-using RougeGame.Core;
-using RougeGame.UI;
+﻿using RougeGame.Core;
 
 namespace ConsoleApp
 {
@@ -9,8 +7,8 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            //RougeGameTest.TestAll();
-
+            
+            // runds the application.
             RougeGameCore.RunGame();
         }
     }

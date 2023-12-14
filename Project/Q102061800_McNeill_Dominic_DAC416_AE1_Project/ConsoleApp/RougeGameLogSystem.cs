@@ -34,13 +34,17 @@ namespace RougeGame.LogSystem
         // the log file's suffix.
         public const string suffix = ".log";
 
+        public const int maxLogSize = 10;
+
         // creates a new log file that is differnt to the rest.
         string currentLogName = $"date_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_time_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}_ms_{DateTime.Now.Millisecond}" + suffix;
         //string currentLogName = DateTime.Now.ToString();
 
+        // used to handle the file and data.
         FileStream fs;
         StreamWriter sw;
 
+        // called when creating a new. called when RougeGameLogSystem name = new(). also when accessing the Instance.
         public RougeGameLogSystem()
         {
             Initilize();
@@ -55,6 +59,46 @@ namespace RougeGame.LogSystem
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(Path.GetFileName(folderName));
+            }
+
+            // the directory (folder) for the images.
+            DirectoryInfo directory = new DirectoryInfo(folderName);
+
+            // Gets all files in the image folder.
+            FileInfo[] files = directory.GetFiles("*" + suffix);
+
+            // this checks if there are more than 10 log files
+            if (files.Length > maxLogSize)
+            { 
+                // turns the array into a list.
+                List<FileInfo> fileList = files.ToList();
+
+                // creates a counter of files because you cannot use data that is in use.
+                int tally = fileList.Count;
+
+                // used to skip files.
+                int ammountToSkip = 0;
+
+                // while the count is above 9 then 
+                while (tally > maxLogSize-1)
+                {
+                    // checks if the first file is the current log.
+                    if (fileList[ammountToSkip].Name != currentLogName)
+                    {                    
+                        // removes the file.
+                        fileList[ammountToSkip].Delete();
+                    }
+                    else
+                    {
+                        // if its the log files, increment by one.
+                        ammountToSkip++;
+                    }
+                    // remove the refernce.
+                    fileList.RemoveAt(ammountToSkip);
+                    // remove one from the tally.
+                    tally--;
+                }
+            
             }
 
             // can create a error when trying to open a file with a already exsiting file stream.

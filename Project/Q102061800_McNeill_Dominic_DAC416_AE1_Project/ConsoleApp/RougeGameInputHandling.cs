@@ -172,47 +172,48 @@ namespace RougeGame
         public static GameAction ComputerInput(CreatureBase computerCreature)
         {
             
-
+            // the return action.
             GameAction gameAction = new GameAction();
 
-            // 
             int errorCont = 0;
 
             bool inLoop = true;
 
+            // how likly for the ai to do a random attack.
+            int blunder = RougeGameUtil.RandomInt(1, 100);
+
             while (inLoop)
             {
+                // start of better logic.       
 
-
-
-                // start of better logic.
-
-                // for now, stops the player of spamming attack.
-
-                int blunder = RougeGameUtil.RandomInt(1, 100);
-
+                // blunder chance so the ai will not always win / cause a stale mate.
                 if (blunder > BlunderChance)
                 {
-
+                    // if the health is low and the energy is high then heal.
                     if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= (computerCreature.maxEnergy * 0.8f) && computerCreature.energy > 10)
                     {
                         RougeGameLogSystem.Instance.WriteLine("heal");
+
                         gameAction.heal = true;
                         gameAction.action = Moves.Dodge;
                         inLoop = false;
                         break;
                     }
+                    // if health is low and energy is low then recharge.
                     else if (computerCreature.health <= (computerCreature.maxHealth * 0.5f) && computerCreature.energy < (computerCreature.maxEnergy * 0.8f))
                     {
-                        RougeGameLogSystem.Instance.WriteLine("recharge 1");
+                        RougeGameLogSystem.Instance.WriteLine("recharge");
+
                         gameAction.heal = false;
                         gameAction.action = Moves.Recharge;
                         inLoop = false;
                         break;
                     }
+                    // if health is high and energy is suffciant then attack.
                     else if (computerCreature.health >= (computerCreature.maxHealth * 0.5f) && computerCreature.energy >= computerCreature.maxEnergy * 0.3f && computerCreature.energy > 5)
                     {
                         RougeGameLogSystem.Instance.WriteLine("attack");
+
                         gameAction.heal = false;
                         gameAction.action = Moves.Attack;
                         inLoop = false;
@@ -226,16 +227,20 @@ namespace RougeGame
 
                 // start of old random logic.
 
+                // pick a random move within the length of the enem. 1 = attack, 2 = special attack, 3 = recharge, 4 = dodge, 5 = heal.
                 int computerChoice = RougeGameUtil.RandomInt((int)Enum.GetValues(typeof(Moves)).GetValue(0), Enum.GetValues(typeof(Moves)).Length);
 
+                // convert the choice into a valid move.
                 Moves? move = RougeGameUtil.ConvertIntIntoMoves(computerChoice);
 
+                // if the move is null, get the computer to pick another move.
                 if (move == null)
                 {
                     // we want the computer to pick another action.
                     continue;
                 }
 
+                // 
                 if (move == Moves.Heal && !gameAction.heal && computerCreature.health <= (computerCreature.maxHealth * 0.8f) && computerCreature.energy >= computerCreature.healCost)
                 {
                     gameAction.heal = true;

@@ -38,35 +38,31 @@ namespace RougeGame.GameMoves
 
     public class RougeGameMoves
     {
-        // not really needed.
-        public static void EnergyRechargeForRound(ref CreatureBase creature, ref CreatureBase otherCreature)
-        {
-            creature.RechargeEnergy();
-            otherCreature.RechargeEnergy();
-        }
-
         public static void Heal(ref CreatureBase creature)
         {
-            //creature.energy -= CreatureBase.healCost;
-
+            // calls the heal function.
             creature.Heal();
         }
 
         public static void Recharge(ref CreatureBase CreatureRecharging, ref CreatureBase EnemyCreature)
         {
+            // increase the enemy's creature hit chance.
             EnemyCreature.hitChanceAddition = CreatureRecharging.rechargeHitChance;
 
+            // increase the creature recharging multiplyer.
             CreatureRecharging.energyRechargeMult = CreatureRecharging.rechargeRate;
         }
 
         public static void Dodge(ref CreatureBase CreatureDodging, ref CreatureBase EnemyCreature)
         {
+            // reduces the enemy's hit change by the dodge hit chance of the creature dodging.
             EnemyCreature.hitChanceAddition = CreatureDodging.dodgeHitChance;
 
+            // reduce engergy for the creature that is dodging.
             CreatureDodging.energyRechargeMult = CreatureDodging.dodgeEnergyReChargeRate;
         }
 
-        // TODO: look into making it work for both attack and special attack. or maybe not.
+        // TODO: look into making it work for both attack and special attack.
         public static bool Attack(ref CreatureBase CreatureAttacking, ref CreatureBase EnemyCreature)
         {
             // cost energy. deducts the attack cost from the current creature 's energy.
@@ -80,10 +76,12 @@ namespace RougeGame.GameMoves
             {
                 // deal random damage within a range.
                 EnemyCreature.TakeDamage(RougeGameUtil.RandomInt(CreatureAttacking.attackDamageMin, CreatureAttacking.attackDamageMax));
+                // return true as it hit.
                 return true;
             }
             else
             {
+                // return false as it missed.
                 return false;
             }
         }
@@ -101,22 +99,14 @@ namespace RougeGame.GameMoves
             {
                 // deal random damage within a range.
                 EnemyCreature.TakeDamage(RougeGameUtil.RandomInt(CreatureAttacking.specialAttackDamageMin, CreatureAttacking.specialAttackDamageMax));
+                // return true as it hit.
                 return true;
             }
             else
             {
+                // return false as it missed.
                 return false;
             }
-        }
-
-        [Obsolete("ResetMults is deprecated, Please use CreatureBase.ResetMultipliers instead.")]
-        public static void ResetMults(ref CreatureBase player, ref CreatureBase other)
-        {
-            // want to add more creatures or have more fights in one game then reset at the start of a new game.
-            player.ResetMultipliers();
-            other.ResetMultipliers();
-
-            // use the built in one that is attached to the class rather than this.
         }
     }
 }

@@ -254,8 +254,10 @@ namespace RougeGame.Core
                 else
                 {
                     // could put these into a round reset func.
-                    RougeGameMoves.EnergyRechargeForRound(ref Player, ref Computer);
-                    RougeGameMoves.ResetMults(ref Player, ref Computer);
+                    Player.RechargeEnergy();
+                    Computer.RechargeEnergy();
+                    Player.ResetMultipliers();
+                    Computer.ResetMultipliers();
                 }
 
                 Console.Clear();
